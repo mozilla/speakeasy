@@ -2,6 +2,7 @@
 ## Install dependencies
 
 ````bash
+brew install phantomjs
 npm install
 ````
 

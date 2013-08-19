@@ -14,104 +14,86 @@ if(!fs.existsSync(ZIPS_DIR)) {
     fs.mkdirSync(ZIPS_DIR);
 }
 
+var detectedTraits = {};
 var apkIndex = 0;
 
 scanNextFile();
 
 function scanNextFile() {
     if(apkIndex < apks.length) {
-        scanAPK(apks[apkIndex++]);
+        var apkFile = apks[apkIndex++];
+        scanAPK(apkFile, function(resultTraits) {
+
+            detectedTraits[ apkFile ] = resultTraits;
+
+            process.nextTick(scanNextFile);
+
+        });
     }
 }
 
-function scanAPK(apkFile) {
-
+function scanAPK(apkFile, doneCallback) {
+    
+    var apkFullPath = path.join('./captures', apkFile);
     var zipPath = path.join(ZIPS_DIR, apkFile + '.zip');
-    var fullPath = path.join('./captures', apkFile);
+    var extractDir = path.join(ZIPS_DIR, apkFile.replace('.apk', ''));
+    var tmpDir = path.join(extractDir, 'TMP!!!');
+    var classesDex = path.join(extractDir, 'classes.dex');
+    var classesTmpDex = path.join(tmpDir, 'classes.dex');
+    var classesJar = path.join(tmpDir, 'classes-dex2jar.jar');
 
-    console.log('APK', fullPath, zipPath);
+    var cwd = process.cwd();
 
-    var rs = fs.createReadStream(fullPath);
-    var ws = fs.createWriteStream(zipPath);
+    var commands = [];
 
-    ws.on('close', function() {
-        console.log('done copying', zipPath);
+    if(!fs.existsSync(extractDir)) {
+        commands.push('cp ' + apkFullPath + ' ' + zipPath);
+        commands.push('unzip ' + zipPath + ' -d ' + extractDir);
+    }
 
-        // some zips make node-unzip go nuts, so let's just use good
-        // old binary unzip via exec
-        /*fs.createReadStream(zipPath)
-        .pipe(unzip.Parse())
-            .on('entry', function(entry) {
-                var filename = entry.path;
-                //console.log(filename, entry);
-                entry.autodrain();
-            })
-            .on('error', function(noidea) {
-                console.log('ERROR', noidea);
-            })
-            .on('close', function() {
-                console.log('end');
-                process.exit(0);
-            });*/
+    if(!fs.existsSync(tmpDir)) {
+        commands.push('mkdir ' + tmpDir);
+    }
 
-        var outDir = path.join(ZIPS_DIR, apkFile.replace('.apk', ''));
+    commands.push('cp ' + classesDex + ' ' + tmpDir);
 
-        exec('rm -Rf ' + outDir, function(error, stdout, stderr) {
-            var cmd = 'unzip ' + zipPath + ' -d ' + outDir;
-            console.log(cmd);
-            exec(cmd, function(error, stdout, stderr) {
-                console.log('unzip done');
+    if(!fs.existsSync(classesJar)) {
 
-                var tmpDir = path.join(outDir, 'TMP!!!');
-                var classesDex = path.join(outDir, 'classes.dex');
-                var classesTmpDex = path.join(tmpDir, 'classes.dex');
-                var classesJar = path.join(tmpDir, 'classes-dex2jar.jar');
-                var cwd = process.cwd();
+        commands.push('cd ' + tmpDir);
 
-                console.log('CWD', cwd);                
+        // converts .dex into .jar
+        commands.push('d2j-dex2jar.sh classes.dex');
 
-                cmd = [
-                    'mkdir ' + tmpDir,
-                    'cp ' + classesDex + ' ' + tmpDir,
-                    'cd ' + tmpDir,
-                    // converts .dex into .jar
-                    'd2j-dex2jar.sh classes.dex',
-                    // extracts the files inside the .jar
-                    'jar xvf classes-dex2jar.jar',
-                    'cd ' + cwd
-                ].join('; ');
+        // extracts the files inside the .jar
+        commands.push('jar xvf classes-dex2jar.jar');
+        commands.push('cd ' + cwd);
 
-                console.log('EXECUTE->', cmd);
+    }
 
-                exec(cmd, function(error, stdout, stderr) {
+    var cmd = commands.join('; ');
+    console.log('Full command', cmd);
 
-                    // actually scan stuff
-                    detectHTML5ness(outDir, function(detectedTraits) {
-                        process.nextTick(scanNextFile);
-                    });
-
-                });
-
-            });
-        });
-
+    exec(cmd, function(error, stdout, stderr) {
+        // We can now actually analyse the APK contents
+        detectHTML5ness(extractDir, doneCallback);
     });
-
-    rs.pipe(ws);
-
 }
+
 
 function filterHTMLfiles(f) {
     return f.match(/\.html?$/i);
 }
 
+
 function filterJSfiles(f) {
     return f.match(/\.js$/i);
 }
 
+
 function filterClassFiles(f) {
     return f.match(/\.class$/i);
 }
+
 
 function filterPhonegapiness(f) {
     var expressions = [
@@ -125,6 +107,7 @@ function filterPhonegapiness(f) {
         return f.match(expression);
     });
 }
+
 
 function detectHTML5ness(apkDir, doneCallback) {
     console.log('Guessing html5-ness in', apkDir);

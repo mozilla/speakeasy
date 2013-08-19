@@ -63,8 +63,10 @@ function scanAPK(apkFile) {
                 console.log('unzip done');
 
                 // TODO actually scan stuff
+                detectHTML5ness(outDir, function() {
+                    // process.nextTick(scanNextFile);
+                });
 
-                scanNextFile();
             });
         });
 
@@ -74,4 +76,77 @@ function scanAPK(apkFile) {
 
 }
 
+function filterHTMLfiles(f) {
+    return f.match(/\.html?$/i);
+}
+
+function filterJSfiles(f) {
+    return f.match(/\.js$/i);
+}
+
+function detectHTML5ness(apkDir, doneCallback) {
+    console.log('Guessing html5-ness in', apkDir);
+
+    var apkFiles = recursiveDirList(apkDir);
+    var traits = [];
+
+    // Possible HTML5 tell-tale signs
+    
+    // presence of html files
+    var htmlFiles = apkFiles.filter(filterHTMLfiles);
+
+    if(htmlFiles.length) {
+        traits.push({
+            amount: 5,
+            reason: 'Presence of HTML files',
+            files: htmlFiles
+        });
+    }
+
+    // presence of js files
+    var jsFiles = apkFiles.filter(filterJSfiles);
+
+    if(jsFiles.length) {
+        console.log('JS Files!!', jsFiles);
+
+        traits.push({
+            amount: 15,
+            reason: 'Presence of JavaScript files',
+            files: jsFiles
+        });
+    }
+
+    // webview calls?
+    // classes.dex -> phonegap / ... / classes?
+
+    var total = 0;
+    traits.forEach(function(tr) {
+        console.log('+ ', tr.amount, tr.reason);
+        total += tr.amount;
+    });
+    console.log(total + ' TOTAL');
+
+    doneCallback(traits);
+}
+
+function recursiveDirList(dir) {
+
+    var results = [];
+    var entries = fs.readdirSync(dir);
+
+    entries.forEach(function(entry) {
+
+        var fullPath = path.join(dir, entry);
+        var stat = fs.statSync(fullPath);
+
+        if(stat && stat.isDirectory()) {
+            results = results.concat( recursiveDirList(fullPath) );
+        } else {
+            results.push(fullPath);
+        }
+
+    });
+
+    return results;
+}
 

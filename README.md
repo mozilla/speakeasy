@@ -9,18 +9,14 @@ npm install
 External/manual dependencies:
 
 * Java SDK to run Java tools
-* dex2jar https://code.google.com/p/dex2jar/ - download and add its directory to your $PATH
-* dedexer http://dedexer.sourceforge.net/ - download and place ddx1.26.jar in the root of this project
+* `dex2jar` https://code.google.com/p/dex2jar/ - download and add its directory to your $PATH
+* `dedexer` http://dedexer.sourceforge.net/ - download and place ddx1.26.jar in the root of this project
 
 ## Running
 
-the order should probably be
+Just run:
 
-* phantomjs phantom-getTop100Free.js
-* node findinslideme.js
-* node inspect-apks.js
-
-(make a bash script?)
+    ./run.sh
 
 ## Output
 

@@ -10,7 +10,7 @@ External/manual dependencies:
 
 * Java SDK to run Java tools
 * dex2jar https://code.google.com/p/dex2jar/ - download and add its directory to your $PATH
-* dedexer http://dedexer.sourceforge.net/ - download and place it in the root of this project
+* dedexer http://dedexer.sourceforge.net/ - download and place ddx1.26.jar in the root of this project
 
 ## Running
 

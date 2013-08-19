@@ -29,11 +29,45 @@ function scanNextFile() {
             process.nextTick(scanNextFile);
 
         });
+    } else {
+        findTotals();
     }
+}
+
+function findTotals() {
+    console.log('TIME TO TOTAL!');
+
+    var totals = [];
+
+    for(var packageName in detectedTraits) {
+        var traits = detectedTraits[packageName];
+
+        var appEntry = {
+            name: packageName,
+            traits: Array.prototype.slice.call(traits, 0)
+        };
+
+        var total = 0;
+        console.log('###### ' + packageName + ' #######');
+        traits.forEach(function(tr) {
+            console.log('+ ', tr.amount.toFixed(2), '\t', tr.reason);
+            total += tr.amount;
+        });
+
+        appEntry.total = total.toFixed(2);
+        
+        console.log(total.toFixed(2) + ' TOTAL');
+        console.log('\n---\n');
+
+        totals.push(appEntry);
+    }
+
+    fs.writeFileSync('captures/totals.json', JSON.stringify(totals, null, 4));
 }
 
 function scanAPK(apkFile, doneCallback) {
     
+    var cwd = process.cwd();   
     var apkFullPath = path.join('./captures', apkFile);
     var zipPath = path.join(ZIPS_DIR, apkFile + '.zip');
     var extractDir = path.join(ZIPS_DIR, apkFile.replace('.apk', ''));
@@ -41,9 +75,8 @@ function scanAPK(apkFile, doneCallback) {
     var classesDex = path.join(extractDir, 'classes.dex');
     var classesTmpDex = path.join(tmpDir, 'classes.dex');
     var classesJar = path.join(tmpDir, 'classes-dex2jar.jar');
-
-    var cwd = process.cwd();
-
+    var ddxDir = path.join(extractDir, 'ddx');
+    var ddxBin = path.join(cwd, 'ddx1.26.jar');
     var commands = [];
 
     if(!fs.existsSync(extractDir)) {
@@ -70,6 +103,15 @@ function scanAPK(apkFile, doneCallback) {
 
     }
 
+    // dex dex
+    if(!fs.existsSync(ddxDir)) {
+        commands.push('mkdir ' + ddxDir);
+        commands.push('cp ' + classesDex + ' ' + ddxDir);
+        commands.push('cd ' + ddxDir);
+        commands.push('java -jar ' + ddxBin + ' -d ' + 'ddx' + ' classes.dex');
+        commands.push('cd ' + cwd);
+    }
+
     var cmd = commands.join('; ');
     console.log('Full command', cmd);
 
@@ -77,6 +119,7 @@ function scanAPK(apkFile, doneCallback) {
         // We can now actually analyse the APK contents
         detectHTML5ness(extractDir, doneCallback);
     });
+
 }
 
 
@@ -121,9 +164,6 @@ function detectHTML5ness(apkDir, doneCallback) {
     var htmlFiles = apkFiles.filter(filterHTMLfiles);
 
     if(htmlFiles.length) {
-        
-        // console.log('HTML files', htmlFiles);
-
         traits.push({
             amount: 5,
             reason: 'Presence of HTML files',
@@ -136,9 +176,6 @@ function detectHTML5ness(apkDir, doneCallback) {
     var jsFiles = apkFiles.filter(filterJSfiles);
 
     if(jsFiles.length) {
-        
-        console.log('JS Files!!', jsFiles);
-
         traits.push({
             amount: 15,
             reason: 'Presence of JavaScript files',
@@ -146,32 +183,44 @@ function detectHTML5ness(apkDir, doneCallback) {
         });
     }
 
-    // TODO webview calls?
 
     // classes.dex -> phonegap / ... / classes?
     var javaClasses = apkFiles.filter(filterClassFiles);
     var phonegapey = javaClasses.filter(filterPhonegapiness);
 
     if(phonegapey.length) {
-
         traits.push({
             amount: 50,
             reason: 'Presence of Phonegap or similar',
             files: phonegapey
         });
-
     }
 
+    // webview calls?
+    // the uncompiled ddx sort-of-assembly files have some metadata
+    // referring to calls to WebView-classes
+    // So we'll increase the chances of this being a 'web' app each time
+    // a file is using WebView or derived classes
+    var ddxDir = path.join(apkDir, 'ddx');
 
-    // TODO this calculation should be done outside
-    var total = 0;
-    traits.forEach(function(tr) {
-        console.log('+ ', tr.amount, tr.reason);
-        total += tr.amount;
+    console.log(ddxDir);
+
+    exec('grep -lr WebView ' + path.join(ddxDir, '*'), function(error, stdout, stderr) {
+
+        var matches = stdout.split('\n');
+        var num = matches.length;
+        if(num) {
+            traits.push({
+                amount: num * 0.1,
+                reason: num.toFixed(2) + ' calls to WebView',
+                files: matches
+            });
+        }
+        
+        doneCallback(traits);
+
     });
-    console.log(total + ' TOTAL');
 
-    doneCallback(traits);
 }
 
 function recursiveDirList(dir) {

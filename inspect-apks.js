@@ -87,7 +87,7 @@ function scanAPK(apkFile) {
 
                     // actually scan stuff
                     detectHTML5ness(outDir, function(detectedTraits) {
-                        // process.nextTick(scanNextFile);
+                        process.nextTick(scanNextFile);
                     });
 
                 });
@@ -111,6 +111,19 @@ function filterJSfiles(f) {
 
 function filterClassFiles(f) {
     return f.match(/\.class$/i);
+}
+
+function filterPhonegapiness(f) {
+    var expressions = [
+        /com\/phonegap/,
+        /com\/sencha/,
+        /org\/apache\/cordova/,
+        /org\/appcelerator/
+    ];
+
+    return expressions.some(function(expression) {
+        return f.match(expression);
+    });
 }
 
 function detectHTML5ness(apkDir, doneCallback) {
@@ -154,6 +167,18 @@ function detectHTML5ness(apkDir, doneCallback) {
 
     // classes.dex -> phonegap / ... / classes?
     var javaClasses = apkFiles.filter(filterClassFiles);
+    var phonegapey = javaClasses.filter(filterPhonegapiness);
+
+    if(phonegapey.length) {
+
+        traits.push({
+            amount: 50,
+            reason: 'Presence of Phonegap or similar',
+            files: phonegapey
+        });
+
+    }
+
 
     // TODO this calculation should be done outside
     var total = 0;

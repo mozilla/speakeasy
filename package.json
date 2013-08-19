@@ -1,4 +1,7 @@
 {
+  "name": "speakeasy",
+  "version": "0.0.1",
+  "author": "Mozilla",
   "dependencies": {
     "js-beautify": "~1.4.0",
     "http-get": "~0.5.10",

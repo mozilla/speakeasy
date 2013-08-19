@@ -62,9 +62,34 @@ function scanAPK(apkFile) {
             exec(cmd, function(error, stdout, stderr) {
                 console.log('unzip done');
 
-                // TODO actually scan stuff
-                detectHTML5ness(outDir, function() {
-                    // process.nextTick(scanNextFile);
+                var tmpDir = path.join(outDir, 'TMP!!!');
+                var classesDex = path.join(outDir, 'classes.dex');
+                var classesTmpDex = path.join(tmpDir, 'classes.dex');
+                var classesJar = path.join(tmpDir, 'classes-dex2jar.jar');
+                var cwd = process.cwd();
+
+                console.log('CWD', cwd);                
+
+                cmd = [
+                    'mkdir ' + tmpDir,
+                    'cp ' + classesDex + ' ' + tmpDir,
+                    'cd ' + tmpDir,
+                    // converts .dex into .jar
+                    'd2j-dex2jar.sh classes.dex',
+                    // extracts the files inside the .jar
+                    'jar xvf classes-dex2jar.jar',
+                    'cd ' + cwd
+                ].join('; ');
+
+                console.log('EXECUTE->', cmd);
+
+                exec(cmd, function(error, stdout, stderr) {
+
+                    // actually scan stuff
+                    detectHTML5ness(outDir, function(detectedTraits) {
+                        // process.nextTick(scanNextFile);
+                    });
+
                 });
 
             });
@@ -84,6 +109,10 @@ function filterJSfiles(f) {
     return f.match(/\.js$/i);
 }
 
+function filterClassFiles(f) {
+    return f.match(/\.class$/i);
+}
+
 function detectHTML5ness(apkDir, doneCallback) {
     console.log('Guessing html5-ness in', apkDir);
 
@@ -96,6 +125,9 @@ function detectHTML5ness(apkDir, doneCallback) {
     var htmlFiles = apkFiles.filter(filterHTMLfiles);
 
     if(htmlFiles.length) {
+        
+        // console.log('HTML files', htmlFiles);
+
         traits.push({
             amount: 5,
             reason: 'Presence of HTML files',
@@ -103,10 +135,12 @@ function detectHTML5ness(apkDir, doneCallback) {
         });
     }
 
+
     // presence of js files
     var jsFiles = apkFiles.filter(filterJSfiles);
 
     if(jsFiles.length) {
+        
         console.log('JS Files!!', jsFiles);
 
         traits.push({
@@ -116,9 +150,12 @@ function detectHTML5ness(apkDir, doneCallback) {
         });
     }
 
-    // webview calls?
-    // classes.dex -> phonegap / ... / classes?
+    // TODO webview calls?
 
+    // classes.dex -> phonegap / ... / classes?
+    var javaClasses = apkFiles.filter(filterClassFiles);
+
+    // TODO this calculation should be done outside
     var total = 0;
     traits.forEach(function(tr) {
         console.log('+ ', tr.amount, tr.reason);

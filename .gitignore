@@ -2,3 +2,5 @@
 *.jar
 captures
 node_modules
+
+google_account.json

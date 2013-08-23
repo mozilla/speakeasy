@@ -22,19 +22,23 @@ function loadData(data) {
 
     data.forEach(function(app) {
 
-        var tr = out.insertRow(-1);
-        tr.className = 'title';
+        // Title
+        var trTitle = out.insertRow(-1);
+        trTitle.className = 'title';
 
-        var tdTotal = tr.insertCell(-1);
+        var tdTotal = trTitle.insertCell(-1);
         tdTotal.innerHTML = app.total;
         
-        var tdName = tr.insertCell(-1);
+        var tdName = trTitle.insertCell(-1);
         tdName.innerHTML = app.name;
 
+
+        // Details
+
         var trDetails = out.insertRow(-1);
-        tr.className = 'details';
+        trDetails.className = 'details';
         var tdDetails = trDetails.insertCell(-1);
-        tdDetails.colspan = 2;
+        tdDetails.colSpan = 2;
 
         var traitsTable = document.createElement('table');
         traitsTable.className = 'traits';
@@ -44,16 +48,16 @@ function loadData(data) {
         traits.sort(makeSorter('amount'));
 
         traits.forEach(function(trait) {
-            var tr = traitsTable.insertRow(-1);
-            var tdAmount = tr.insertCell(-1);
-            var tdDesc = tr.insertCell(-1);
+            var traitRow = traitsTable.insertRow(-1);
+            var tdAmount = traitRow.insertCell(-1);
+            var tdDesc = traitRow.insertCell(-1);
 
             tdAmount.innerHTML = trait.amount.toFixed(2);
             tdDesc.innerHTML = trait.reason;
 
             var hover = trait.files.join('\n');
 
-            tr.title = hover;
+            traitRow.title = hover;
 
         });
 

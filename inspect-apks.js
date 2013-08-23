@@ -3,12 +3,12 @@ var path = require('path');
 var unzip = require('unzip');
 var exec = require('child_process').exec;
 
-var apks = fs.readdirSync('./captures').filter(function(entry) {
+var APKS_DIR = './captures/apks';
+var ZIPS_DIR = './captures/zips';
+
+var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
     return entry.match('\\.apk$');
 });
-
-console.log(apks);
-var ZIPS_DIR = './captures/zips';
 
 if(!fs.existsSync(ZIPS_DIR)) {
     fs.mkdirSync(ZIPS_DIR);
@@ -22,6 +22,7 @@ scanNextFile();
 function scanNextFile() {
     if(apkIndex < apks.length) {
         var apkFile = apks[apkIndex++];
+        console.log('Scanning ' + Math.round(apkIndex/apks.length*100.0).toFixed(2) +'%');
         scanAPK(apkFile, function(resultTraits) {
 
             detectedTraits[ apkFile ] = resultTraits;
@@ -68,7 +69,7 @@ function findTotals() {
 function scanAPK(apkFile, doneCallback) {
     
     var cwd = process.cwd();   
-    var apkFullPath = path.join('./captures', apkFile);
+    var apkFullPath = path.join(APKS_DIR, apkFile);
     var zipPath = path.join(ZIPS_DIR, apkFile + '.zip');
     var extractDir = path.join(ZIPS_DIR, apkFile.replace('.apk', ''));
     var tmpDir = path.join(extractDir, 'TMP!!!');

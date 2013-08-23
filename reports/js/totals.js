@@ -1,10 +1,12 @@
 var request = new XMLHttpRequest();
 
 request.open('GET', 'totals.json', true);
-request.responseType = 'json';
+request.responseType = 'text';
 request.onload = function() {
     try {
-        loadData(request.response);
+        var data = request.response;
+        var json = JSON.parse(data);
+        loadData(json);
     } catch(e) {
         console.log('booo when loading data', e);
     }
@@ -13,27 +15,21 @@ request.onload = function() {
 request.send();
 
 function loadData(data) {
-    
-    data.sort(function(a, b) {
-        var totalA = a.total * 1.0;
-        var totalB = b.total * 1.0;
-        return totalA <= totalB;
-    });
+
+    data.sort(makeSorter('total'));
 
     var out = document.getElementById('out');
 
     data.forEach(function(app) {
-        
+
         var tr = out.insertRow(-1);
         tr.className = 'title';
 
-        var tdName = tr.insertCell(-1);
-        tdName.innerHTML = app.name;
-
         var tdTotal = tr.insertCell(-1);
         tdTotal.innerHTML = app.total;
-
-        console.log(app.name, app.total);
+        
+        var tdName = tr.insertCell(-1);
+        tdName.innerHTML = app.name;
 
         var trDetails = out.insertRow(-1);
         tr.className = 'details';
@@ -41,12 +37,11 @@ function loadData(data) {
         tdDetails.colspan = 2;
 
         var traitsTable = document.createElement('table');
+        traitsTable.className = 'traits';
         tdDetails.appendChild(traitsTable);
 
         var traits = app.traits;
-        traits.sort(function(a, b) {
-            return a.amount < b.amount;
-        });
+        traits.sort(makeSorter('amount'));
 
         traits.forEach(function(trait) {
             var tr = traitsTable.insertRow(-1);
@@ -64,4 +59,18 @@ function loadData(data) {
 
     });
 
+}
+
+function makeSorter(propertyName) {
+    return function(a, b) {
+        var propA = Number(a[propertyName]);
+        var propB = Number(b[propertyName]);
+        var epsilon = propA - propB;
+
+        if(Math.abs(epsilon) < 0.0001) {
+            return 0;
+        } else {
+            return epsilon > 0 ? -1 : 1;
+        }
+    };
 }

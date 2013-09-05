@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.title {
+    font-size: 180%;
+}
+
+.title td:first-child {
+    font-weight: bold;
+}
+
+#out > tbody > tr > td {
+    padding: 0.5rem 1rem;
+}
+
+.traits {
+    xborder: 1px dotted black;
+}
+
+.traits tr:nth-child(2n) {
+    background: #efefef;
+}
+
+.traits tr:nth-child(2n+1) {
+    background: #dfdfdf;
+}
+
+.traits td {
+    padding: 0.5rem;
+}
+
+.traits td:first-child {
+    text-align: right;
+}

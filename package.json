@@ -5,6 +5,8 @@
   "dependencies": {
     "js-beautify": "~1.4.0",
     "http-get": "~0.5.10",
-    "unzip": "~0.1.8"
+    "unzip": "~0.1.8",
+    "nconf": "~0.6.7"
+
   }
 }

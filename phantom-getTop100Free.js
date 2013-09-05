@@ -1,7 +1,26 @@
-
+var args = require('system').args;
 var page = require('webpage').create();
 
-var TOP100_URL = 'https://play.google.com/store/apps/collection/topselling_free';
+var NUM_APPS = 100;
+var OUTDIR = './captures';
+var TOP_URL =  'https://play.google.com/store/apps/collection/topselling_free';
+
+function valueOf(argument) {
+    return argument.split('=')[1];
+}
+
+if(args.length >= 1) {
+    args.forEach(function(arg, i) {
+       if(arg.match(/^--num-apps=/)) {
+           NUM_APPS = valueOf(arg);
+       } else if(arg.match(/^--output-dir=/)) {
+            OUTDIR = valueOf(arg);
+       } else if(arg.match(/^--top-url=/)) {
+           TOP_URL = valueOf(arg);
+       }
+    });
+}
+
 
 // Fake out our user agent, we're Chrome 28 now
 page.settings.userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36";
@@ -18,7 +37,7 @@ page.onResourceRequested = function(request) {
 };
 
 
-page.open(TOP100_URL, function(status) {
+page.open(TOP_URL, function(status) {
 
     if(status !== 'success') {
         console.log('ohh boo', status);
@@ -54,11 +73,11 @@ page.open(TOP100_URL, function(status) {
             }
         });
 
-        if(appsURLs.length >= 100) {
+        if(appsURLs.length >= NUM_APPS) {
             console.log('HAVE', appsURLs.length, 'app URLs');
 
             var fs = require('fs');
-            fs.write('appsURLs.json', JSON.stringify(appsURLs, null, 4));
+            fs.write(OUTDIR + '/appsURLs.json', JSON.stringify(appsURLs, null, 4));
 
             phantom.exit();
         }
@@ -76,7 +95,7 @@ page.open(TOP100_URL, function(status) {
         });
 
         page.scrollPosition = { top: actualScroll, left: 0 };
-        page.render('captures/' + Date.now() + '-' + actualScroll + '.png');
+        page.render(OUTDIR + '/' + Date.now() + '-' + actualScroll + '.png');
 
 
     }, 5000 + Math.random() * 10);

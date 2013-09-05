@@ -19,7 +19,8 @@ node ./inspect-apks.js
 */
 
 var commands = [
-    { cmd: 'phantomjs', args: ['./phantom-getTop100Free.js', '--num-apps=' + settings.get('numApps'), '--out-dir=' + settings.get('outputDir') ] }
+    { cmd: 'phantomjs', args: ['./phantom-getTop100Free.js', '--num-apps=' + settings.get('numApps'), '--out-dir=' + settings.get('outputDir') ] },
+    //{ cmd: 'node', args: ['./batch-download.js'] }
     //{ cmd: 'ls', args: ['.'] }
 ];
 

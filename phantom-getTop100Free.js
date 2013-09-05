@@ -73,6 +73,8 @@ page.open(TOP_URL, function(status) {
             }
         });
 
+        console.log('have', appsURLs.length);
+
         if(appsURLs.length >= NUM_APPS) {
             console.log('HAVE', appsURLs.length, 'app URLs');
 
@@ -86,11 +88,19 @@ page.open(TOP_URL, function(status) {
         var actualScroll = page.evaluate(function() {
 
             var currScroll = window.document.body.scrollTop;
-            var newScroll = currScroll + 100;
+            var newScroll = currScroll + 800;
             console.log(currScroll, '=>', newScroll);
             window.document.body.scrollTop = newScroll;
             // window.document.body.scrollTop = document.body.scrollHeight;
             console.log('actual?', window.document.body.scrollTop);
+
+            if(window.document.body.scrollTop < newScroll) {
+                // scrolling is not enough, sometimes
+                var more = window.document.getElementById('show-more-button');
+                more.click();
+                console.log('MOAAAAR');
+            }
+
             return window.document.body.scrollTop;
         });
 

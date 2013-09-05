@@ -21,6 +21,10 @@ if(args.length >= 1) {
     });
 }
 
+console.log('using out dir', OUTDIR);
+var OUTFILE = OUTDIR + '/appsURLs.json';
+console.log('output', OUTFILE);
+
 
 // Fake out our user agent, we're Chrome 28 now
 page.settings.userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36";
@@ -43,6 +47,9 @@ page.open(TOP_URL, function(status) {
         console.log('ohh boo', status);
         phantom.exit();
     }
+
+    var scrollAttempts = 0;
+    var previousScroll = 0;
 
     window.setInterval(function() {
 
@@ -75,11 +82,15 @@ page.open(TOP_URL, function(status) {
 
         console.log('have', appsURLs.length);
 
-        if(appsURLs.length >= NUM_APPS) {
+        if(appsURLs.length >= NUM_APPS || scrollAttempts > 5) {
             console.log('HAVE', appsURLs.length, 'app URLs');
 
+            if(appsURLs.length < NUM_APPS) {
+                console.log('we might have given up :-/');
+            }
+
             var fs = require('fs');
-            fs.write(OUTDIR + '/appsURLs.json', JSON.stringify(appsURLs, null, 4));
+            fs.write(OUTFILE, JSON.stringify(appsURLs, null, 4));
 
             phantom.exit();
         }
@@ -97,15 +108,27 @@ page.open(TOP_URL, function(status) {
             if(window.document.body.scrollTop < newScroll) {
                 // scrolling is not enough, sometimes
                 var more = window.document.getElementById('show-more-button');
-                more.click();
+                if(more) {
+                    more.click();
+                }
                 console.log('MOAAAAR');
             }
 
             return window.document.body.scrollTop;
+
         });
 
+        if(previousScroll === actualScroll) {
+            console.log('another attempt', scrollAttempts, previousScroll, actualScroll);
+            scrollAttempts++;
+        } else {
+            scrollAttempts = 0;
+        }
+
+        previousScroll = actualScroll;
+
         page.scrollPosition = { top: actualScroll, left: 0 };
-        page.render(OUTDIR + '/' + Date.now() + '-' + actualScroll + '.png');
+        //page.render(OUTDIR + '/' + Date.now() + '-' + actualScroll + '.png');
 
 
     }, 5000 + Math.random() * 10);

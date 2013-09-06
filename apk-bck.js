@@ -1,11 +1,14 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
 var path = require('path');
+var settings = require('./settings');
 
 var packages;
 var currentPackageIndex = 0;
 var original_cwd = process.cwd();
-var outDir = path.join(original_cwd, 'captures', 'apks');
+var outDir = path.join(original_cwd, settings.get('outputDir'), settings.get('apksDir'));
+
+console.log('apk-bck out dir=' + outDir);
 
 if(!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir);
@@ -15,32 +18,51 @@ process.chdir(outDir);
 
 exec('adb shell pm list packages', function(error, stdout, stderr) {
     
-    packages = stdout.split('\r\n');
 
-    processNext();
+    if(error) {
+        var errorMsg = error.toString();
+        console.error(errorMsg);
+        if(errorMsg.search('device not found')) {
+            console.log('>>> hint hint: IS THE DEVICE CONNECTED TO THE COMPUTER?');
+        }
+    } else {
+
+        packages = stdout.split('\r\n');
+        processNext();
+
+    }
 
 });
 
 function processNext() {
     var pk = packages[currentPackageIndex];
-
-    console.log('this', pk);
+    currentPackageIndex++;
 
     var f = pk.replace('package:', '');
     f = f + '-1.apk';
 
-    console.log('pull', f);
+    console.log(f);
 
-    exec('adb pull /data/app/' + f, function(er, sout, serr) {
+    if(fs.existsSync(f)) {
 
-        currentPackageIndex++;
+        console.log('\t=> already exists');
+        nextStep();
 
-        if(currentPackageIndex < packages.length) {
-            process.nextTick(processNext);
-        } else {
-            finish();
-        }
-    });
+    } else {
+
+        exec('adb pull /data/app/' + f, function(er, sout, serr) {
+            nextStep();
+        });
+
+    }
+}
+
+function nextStep() {
+    if(currentPackageIndex < packages.length) {
+        process.nextTick(processNext);
+    } else {
+        finish();
+    }
 }
 
 function finish() {

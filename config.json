@@ -1,4 +1,5 @@
 {
     "outputDir": "./captures",
+    "apksDir": "apks",
     "numApps": 1000
 }

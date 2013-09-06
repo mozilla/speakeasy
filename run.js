@@ -16,11 +16,12 @@ if(!fs.existsSync(outputDir)) {
 # node ./findinslideme.js # optional if you're curious, we're not using this anymore
 node ./batch-download.js
 node ./inspect-apks.js
+node ./apk-bck.js
 */
 
 var commands = [
     { cmd: 'phantomjs', args: ['./phantom-getTop100Free.js', '--num-apps=' + settings.get('numApps'), '--out-dir=' + settings.get('outputDir') ] },
-    //{ cmd: 'node', args: ['./batch-download.js'] }
+    { cmd: 'node', args: ['./batch-download.js'] }
     //{ cmd: 'ls', args: ['.'] }
 ];
 

@@ -27,7 +27,7 @@ exec('adb shell pm list packages', function(error, stdout, stderr) {
         }
     } else {
 
-        packages = stdout.split('\r\n');
+        packages = stdout.trim().split('\r\n');
         processNext();
 
     }

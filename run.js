@@ -11,18 +11,11 @@ if(!fs.existsSync(outputDir)) {
     fs.makeDirSync(outputDir);
 }
 
-/*
- * phantomjs ./phantom-getTop100Free.js
-# node ./findinslideme.js # optional if you're curious, we're not using this anymore
-node ./batch-download.js
-node ./inspect-apks.js
-node ./apk-bck.js
-*/
-
 var commands = [
     { cmd: 'phantomjs', args: ['./phantom-getTop100Free.js', '--num-apps=' + settings.get('numApps'), '--out-dir=' + settings.get('outputDir') ] },
-    { cmd: 'node', args: ['./batch-download.js'] }
-    //{ cmd: 'ls', args: ['.'] }
+    { cmd: 'node', args: ['./batch-download.js'] },
+    { cmd: 'node', args: ['./apk-bck.js'] },
+    { cmd: 'node', args: ['./inspect-apks.js'] }
 ];
 
 var nextCommandIndex = 0;

@@ -22,36 +22,49 @@ var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
 var detectedTraits = {};
 var apkIndex = 0;
 
-scanNextFile();
+nextStep();
+
+// ---
 
 function scanNextFile() {
-    if(apkIndex < apks.length) {
-        var apkFile = apks[apkIndex];
-        var traitsFile = path.join(TRAITS_DIR, apkFile.replace('.apk', '.json'));
 
-        apkIndex++;
+    var apkFile = apks[apkIndex];
+    var traitsFile = path.join(TRAITS_DIR, apkFile.replace('.apk', '.json'));
 
-        if(!fs.existsSync(traitsFile)) {
-            
-            console.log('Scanning ' + Math.round(apkIndex/apks.length*100.0).toFixed(2) +'%');
-            console.log('Results will go to ' + traitsFile);
+    apkIndex++;
 
-            scanAPK(apkFile, function(resultTraits) {
+    if(!fs.existsSync(traitsFile)) {
+        
+        console.log('Scanning ' + Math.round(apkIndex/apks.length*100.0).toFixed(2) +'%');
+        console.log('Results will go to ' + traitsFile);
 
-                fs.writeFileSync(traitsFile, JSON.stringify(resultTraits, null, 4));
+        scanAPK(apkFile, function(resultTraits) {
 
-                process.nextTick(scanNextFile);
+            fs.writeFileSync(traitsFile, JSON.stringify(resultTraits, null, 4));
 
-            });
+            // process.nextTick(scanNextFile);
+            nextStep();
 
-        } else {
+        });
 
-            console.log('Already have traits for ' + apkFile + ', so skipping');
-            process.nextTick(scanNextFile);
-
-        }
     } else {
+
+        console.log('Already have traits for ' + apkFile + ', so skipping');
+        nextStep();
+        
+    }
+
+}
+
+function nextStep() {
+    if(apkIndex < apks.length) {
+        
+        process.nextTick(scanNextFile);
+
+    } else {
+
         findTotals();
+
     }
 }
 
@@ -60,17 +73,23 @@ function findTotals() {
 
     var totals = [];
 
-    for(var packageName in detectedTraits) {
-        var traits = detectedTraits[packageName];
+    var traits = fs.readdirSync(TRAITS_DIR).filter(function(entry) {
+        return entry.match('\\.json');
+    });
+
+    traits.forEach(function(traitFile) {
+        var packageName = traitFile.replace('.json', '');
+        var traitPath = path.join(TRAITS_DIR, traitFile);
+        var data = JSON.parse(fs.readFileSync(traitPath));
 
         var appEntry = {
             name: packageName,
-            traits: Array.prototype.slice.call(traits, 0)
+            traits: data
         };
 
         var total = 0;
         console.log('###### ' + packageName + ' #######');
-        traits.forEach(function(tr) {
+        data.forEach(function(tr) {
             console.log('+ ', tr.amount.toFixed(2), '\t', tr.reason);
             total += tr.amount;
         });
@@ -81,9 +100,12 @@ function findTotals() {
         console.log('\n---\n');
 
         totals.push(appEntry);
-    }
+
+
+    });
 
     fs.writeFileSync('captures/totals.json', JSON.stringify(totals, null, 4));
+
 }
 
 function scanAPK(apkFile, doneCallback) {

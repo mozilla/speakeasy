@@ -2,9 +2,11 @@ var fs = require('fs');
 var path = require('path');
 var unzip = require('unzip');
 var exec = require('child_process').exec;
+var settings = require('./settings');
 
-var APKS_DIR = './captures/apks';
-var ZIPS_DIR = './captures/zips';
+var OUT_DIR = settings.get('outputDir');
+var APKS_DIR = path.join(OUT_DIR, settings.get('apksDir'));
+var ZIPS_DIR = path.join(OUT_DIR, settings.get('zipsDir'));
 
 var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
     return entry.match('\\.apk$');

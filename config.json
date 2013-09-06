@@ -1,5 +1,6 @@
 {
     "outputDir": "./captures",
     "apksDir": "apks",
+    "zipsDir": "zips",
     "numApps": 1000
 }

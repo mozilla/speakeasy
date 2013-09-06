@@ -1,13 +1,9 @@
+// This script requests downloading a single app
 var LOGIN_URL = 'https://accounts.google.com/ServiceLogin';
 
-// Get our list of apps.
 var fs = require('fs');
-// var options = require('utils').dump();
-
-var urls = JSON.parse(fs.read('appsURLs.json'));
 
 var casper = require('casper').create({
-    // waitTimeout: 10000
     onWaitTimeout: function() {
         this.warn('Timeout for ' + this.getTitle() + '. Already installed?');
         this.done();

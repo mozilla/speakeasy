@@ -7,14 +7,17 @@ var settings = require('./settings');
 var OUT_DIR = settings.get('outputDir');
 var APKS_DIR = path.join(OUT_DIR, settings.get('apksDir'));
 var ZIPS_DIR = path.join(OUT_DIR, settings.get('zipsDir'));
+var TRAITS_DIR = path.join(OUT_DIR, settings.get('traitsDir'));
 
 var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
     return entry.match('\\.apk$');
 });
 
-if(!fs.existsSync(ZIPS_DIR)) {
-    fs.mkdirSync(ZIPS_DIR);
-}
+[ZIPS_DIR, TRAITS_DIR].forEach(function(d) {
+    if(!fs.existsSync(d)) {
+        fs.mkdirSync(d);
+    }
+});
 
 var detectedTraits = {};
 var apkIndex = 0;
@@ -23,15 +26,30 @@ scanNextFile();
 
 function scanNextFile() {
     if(apkIndex < apks.length) {
-        var apkFile = apks[apkIndex++];
-        console.log('Scanning ' + Math.round(apkIndex/apks.length*100.0).toFixed(2) +'%');
-        scanAPK(apkFile, function(resultTraits) {
+        var apkFile = apks[apkIndex];
+        var traitsFile = path.join(TRAITS_DIR, apkFile.replace('.apk', '.json'));
 
-            detectedTraits[ apkFile ] = resultTraits;
+        apkIndex++;
 
+        if(!fs.existsSync(traitsFile)) {
+            
+            console.log('Scanning ' + Math.round(apkIndex/apks.length*100.0).toFixed(2) +'%');
+            console.log('Results will go to ' + traitsFile);
+
+            scanAPK(apkFile, function(resultTraits) {
+
+                fs.writeFileSync(traitsFile, JSON.stringify(resultTraits, null, 4));
+
+                process.nextTick(scanNextFile);
+
+            });
+
+        } else {
+
+            console.log('Already have traits for ' + apkFile + ', so skipping');
             process.nextTick(scanNextFile);
 
-        });
+        }
     } else {
         findTotals();
     }

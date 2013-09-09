@@ -36,10 +36,10 @@ Just run:
 ./run.sh
 ````
 
-Or you can also run the individual scripts separately.
+Or you can also run the individual scripts separately, as long as the previous script has already been ran once and the corresponding data has been gathered. For example, you can run the script that inspects apps at any time, but it makes no sense to do so before you have apps to inspect!
 
 ## Output
 
 Things are downloaded/saved into `captures/`
 
-Make sure the folder exists first ;-)
+If the folder doesn't exist, it will be automatically created.

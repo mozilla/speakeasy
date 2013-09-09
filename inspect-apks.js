@@ -5,6 +5,7 @@ var exec = require('child_process').exec;
 var settings = require('./settings');
 
 var OUT_DIR = settings.get('outputDir');
+var REPORTS_DIR = settings.get('reportsDir');
 var APKS_DIR = path.join(OUT_DIR, settings.get('apksDir'));
 var ZIPS_DIR = path.join(OUT_DIR, settings.get('zipsDir'));
 var TRAITS_DIR = path.join(OUT_DIR, settings.get('traitsDir'));
@@ -104,7 +105,9 @@ function findTotals() {
 
     });
 
-    fs.writeFileSync('captures/totals.json', JSON.stringify(totals, null, 4));
+    var jsonString = JSON.stringify(totals, null, 4);
+    fs.writeFileSync(path.join(OUT_DIR, 'totals.json'), jsonString);
+    fs.writeFileSync(path.join(REPORTS_DIR, 'totals.json'), jsonString);
 
 }
 

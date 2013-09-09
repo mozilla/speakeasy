@@ -2,5 +2,6 @@
 *.jar
 captures
 node_modules
+reports/totals.json
 
 google_account.json

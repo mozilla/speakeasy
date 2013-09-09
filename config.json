@@ -3,5 +3,6 @@
     "apksDir": "apks",
     "zipsDir": "zips",
     "traitsDir": "traits",
+    "reportsDir": "reports",
     "numApps": 1000
 }

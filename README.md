@@ -33,7 +33,7 @@ There are additional external dependencies that have to be installed manually:
 Just run:
 
 ````bash
-./run.sh
+node run.js
 ````
 
 Or you can also run the individual scripts separately, as long as the previous script has already been ran once and the corresponding data has been gathered. For example, you can run the script that inspects apps at any time, but it makes no sense to do so before you have apps to inspect!

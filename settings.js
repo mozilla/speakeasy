@@ -10,7 +10,8 @@ if(fs.existsSync(CONFIG_FILE)) {
 }
 
 nconf.defaults({
-    outputDir: 'captures'
+    outputDir: 'captures',
+    uninstall: 0
 });
 
 // finally expose the config thingie

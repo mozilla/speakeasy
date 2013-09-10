@@ -1,5 +1,7 @@
 {
     "outputDir": "./captures",
+    "urlsJSON": "appsURLs.json",
+    "categoriesJSON": "categories.json",
     "apksDir": "apks",
     "zipsDir": "zips",
     "traitsDir": "traits",

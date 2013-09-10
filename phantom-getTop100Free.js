@@ -3,6 +3,7 @@ var page = require('webpage').create();
 
 var NUM_APPS = 100;
 var OUTDIR = './captures';
+var OUTFILENAME = 'appsURLs.json';
 var TOP_URL =  'https://play.google.com/store/apps/collection/topselling_free';
 
 function valueOf(argument) {
@@ -17,12 +18,14 @@ if(args.length >= 1) {
             OUTDIR = valueOf(arg);
        } else if(arg.match(/^--top-url=/)) {
            TOP_URL = valueOf(arg);
+       } else if(arg.match(/^--output-file=/)) {
+           OUTFILENAME = valueOf(arg);
        }
     });
 }
 
 console.log('using out dir', OUTDIR);
-var OUTFILE = OUTDIR + '/appsURLs.json';
+var OUTFILE = OUTDIR + '/' + OUTFILENAME;
 console.log('output', OUTFILE);
 
 

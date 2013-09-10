@@ -24,6 +24,7 @@ if(args.length >= 1) {
     });
 }
 
+console.log('reading from', TOP_URL);
 console.log('using out dir', OUTDIR);
 var OUTFILE = OUTDIR + '/' + OUTFILENAME;
 console.log('output', OUTFILE);

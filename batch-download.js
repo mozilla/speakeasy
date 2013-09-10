@@ -4,8 +4,9 @@ var path = require('path');
 var url = require('url');
 var settings = require('./settings');
 var OUTDIR = settings.get('outputDir');
+var URLS_FILE = settings.get('urlsFile');
 
-var urls = JSON.parse(fs.readFileSync(path.join(OUTDIR, 'appsURLs.json')));
+var urls = JSON.parse(fs.readFileSync(path.join(OUTDIR, URLS_FILE)));
 
 var currentURLIndex = 0;
 var sys = require('sys');

@@ -20,6 +20,31 @@ function run(command, args, endCallback) {
 
 }
 
+function sequentialForEach(array, funct, doneCallback) {
+
+    var index = 0;
+
+    function iterateNext() {
+
+        if(index >= array.length) {
+            process.nextTick(doneCallback);
+        } else {
+            var item = array[index];
+            index++;
+
+            funct(item, function() {
+                process.nextTick(iterateNext);
+            });
+
+        }
+
+    }
+
+    iterateNext();
+
+}
+
 module.exports = {
-    run: run
+    run: run,
+    sequentialForEach: sequentialForEach
 };

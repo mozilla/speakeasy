@@ -33,7 +33,7 @@ sequentialForEach(urls, function(url, goOn) {
             '--output-file=' + catFile,
             '--top-url=' + baseURL
         ], function(code) {
-            // goOn();
+            goOn();
         }); 
     } else {
         console.log('MEEEOW!', catFilePath);

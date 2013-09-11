@@ -1,14 +1,18 @@
 var util = require('util');
 var fs = require('fs');
+var path = require('path');
 var settings = require('./settings');
 var run = require('./functions').run;
 
 // ensure the output dir exists
 var outputDir = settings.get('outputDir');
+var appsInfoDir = path.join(outputDir, settings.get('appsInfoDir'));
 
-if(!fs.existsSync(outputDir)) {
-    fs.makeDirSync(outputDir);
-}
+[outputDir, appsInfoDir].forEach(function(d) {
+    if(!fs.existsSync(d)) {
+        fs.makeDirSync(d);
+    }
+});
 
 var commands = [
     { cmd: 'phantomjs', args: ['./phantom-getTop100Free.js', '--num-apps=' + settings.get('numApps'), '--output-dir=' + settings.get('outputDir'), '--output-file=' + settings.get('appsJSON') ] },

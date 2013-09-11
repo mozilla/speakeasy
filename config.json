@@ -3,6 +3,7 @@
     "urlsJSON": "appsURLs.json",
     "categoriesJSON": "categories.json",
     "apksDir": "apks",
+    "appsInfoDir": "appsInfo",
     "zipsDir": "zips",
     "traitsDir": "traits",
     "reportsDir": "reports",

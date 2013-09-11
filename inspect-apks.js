@@ -43,7 +43,6 @@ function scanNextFile() {
 
             fs.writeFileSync(traitsFile, JSON.stringify(resultTraits, null, 4));
 
-            // process.nextTick(scanNextFile);
             nextStep();
 
         });

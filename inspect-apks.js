@@ -3,12 +3,14 @@ var path = require('path');
 var unzip = require('unzip');
 var exec = require('child_process').exec;
 var settings = require('./settings');
+var sequentialForEach = require('./functions').sequentialForEach;
 
 var OUT_DIR = settings.get('outputDir');
 var REPORTS_DIR = settings.get('reportsDir');
 var APKS_DIR = path.join(OUT_DIR, settings.get('apksDir'));
 var ZIPS_DIR = path.join(OUT_DIR, settings.get('zipsDir'));
 var TRAITS_DIR = path.join(OUT_DIR, settings.get('traitsDir'));
+var APPS_INFO_DIR = path.join(OUT_DIR, settings.get('appsInfoDir'));
 
 var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
     return entry.match('\\.apk$');
@@ -30,8 +32,10 @@ nextStep();
 function scanNextFile() {
 
     var apkFile = apks[apkIndex];
-    var traitsFile = path.join(TRAITS_DIR, apkFile.replace('.apk', '.json'));
+    var traitsFile = path.join(TRAITS_DIR, apkFile.replace(/-(\d+)\.apk$/, '.json'));
 
+    console.log('TRAITS FILE', traitsFile);
+    
     apkIndex++;
 
     if(!fs.existsSync(traitsFile)) {
@@ -77,37 +81,76 @@ function findTotals() {
         return entry.match('\\.json');
     });
 
-    traits.forEach(function(traitFile) {
+    sequentialForEach(traits, function(traitFile, goOn) {
+
         var packageName = traitFile.replace('.json', '');
         var traitPath = path.join(TRAITS_DIR, traitFile);
+        var infoPath = path.join(APPS_INFO_DIR, traitFile);
         var data = JSON.parse(fs.readFileSync(traitPath));
 
-        var appEntry = {
-            name: packageName,
-            traits: data
-        };
+        console.log('INFO', infoPath);
 
-        var total = 0;
-        console.log('###### ' + packageName + ' #######');
-        data.forEach(function(tr) {
-            console.log('+ ', tr.amount.toFixed(2), '\t', tr.reason);
-            total += tr.amount;
-        });
+        if(!fs.existsSync(infoPath)) {
+            findAppInfo(packageName, function() {
+                addEntry();
+            });
+        } else {
+            addEntry();
+        }
 
-        appEntry.total = total.toFixed(2);
-        
-        console.log(total.toFixed(2) + ' TOTAL');
-        console.log('\n---\n');
+        function addEntry() {
 
-        totals.push(appEntry);
+            var appEntry = {
+                name: packageName,
+                traits: data
+            };
 
+            var info;
+
+            try {
+                info = JSON.parse(fs.readFileSync(infoPath));
+                appEntry.info = info;
+            } catch(e) { }
+
+            var total = 0;
+            console.log('###### ' + packageName + ' #######');
+            data.forEach(function(tr) {
+                console.log('+ ', tr.amount.toFixed(2), '\t', tr.reason);
+                total += tr.amount;
+            });
+
+            appEntry.total = total.toFixed(2);
+
+            console.log(total.toFixed(2) + ' TOTAL');
+            console.log('\n---\n');
+
+            totals.push(appEntry);
+
+            process.nextTick(goOn);
+
+        }
+
+    }, function() {
+
+        var jsonString = JSON.stringify(totals, null, 4);
+        fs.writeFileSync(path.join(OUT_DIR, 'totals.json'), jsonString);
+        fs.writeFileSync(path.join(REPORTS_DIR, 'totals.json'), jsonString);
 
     });
 
-    var jsonString = JSON.stringify(totals, null, 4);
-    fs.writeFileSync(path.join(OUT_DIR, 'totals.json'), jsonString);
-    fs.writeFileSync(path.join(REPORTS_DIR, 'totals.json'), jsonString);
+}
 
+function findAppInfo(packageName, callback) {
+    var url = 'https://play.google.com/store/apps/details?id=' + packageName;
+    var outFile = packageName + '.json';
+   
+    console.log('find info for', packageName, url);
+    exec("phantomjs phantom-query-pkg-info.js --url=" + url + " --output-file=" + outFile + " --output-dir=" + APPS_INFO_DIR, function(error, stdout, stderr) {
+        console.log('done find app info', error);
+        console.log(stdout);
+
+        callback();
+    });
 }
 
 function scanAPK(apkFile, doneCallback) {

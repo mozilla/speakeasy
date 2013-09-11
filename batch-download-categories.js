@@ -12,10 +12,10 @@ var urls = JSON.parse(fs.readFileSync(path.join(OUTDIR, CATS_FILE)));
 var index = 0;
 
 
+
 sequentialForEach(urls, function(url, goOn) {
 
-    var catName = url.split('/').pop();
-    var catFile = 'category-' + catName + '.json';
+    var catFile = makeCategoryFileName(url);// 'category-' + catName + '.json';
     var catFilePath = path.join(OUTDIR, catFile);
 
     console.log(catFile);
@@ -38,9 +38,36 @@ sequentialForEach(urls, function(url, goOn) {
         goOn();
     }
 
-    // request downloads in one side, apk-bck in another side
-
 }, function() {
     console.log('sequential done');
+    iterateCategories();
 });
+
+function makeCategoryFileName(url) {
+    var catName = url.split('/').pop();
+    var catFile = 'category-' + catName + '.json';
+    return catFile;
+}
+
+function iterateCategories() {
+    // request downloads in one side, apk-bck in another side
+    
+    sequentialForEach(urls, function(url, goOn) {
+
+
+        console.log('Going to investigate', url);
+        console.log('Remember to back up in another tab, or something');
+
+        var urlsFile = makeCategoryFileName(url);
+
+        run('node', [
+            'batch-download.js',
+            '--urlsJSON=' + urlsFile
+        ], goOn);
+
+    }, function() {
+        console.log('boom! and bye');
+    });
+
+}
 

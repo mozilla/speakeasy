@@ -11,11 +11,13 @@ var urls = JSON.parse(fs.readFileSync(path.join(OUTDIR, CATS_FILE)));
 
 var index = 0;
 
-
+urls.sort();
+console.log(urls);
 
 sequentialForEach(urls, function(url, goOn) {
 
-    var catFile = makeCategoryFileName(url);// 'category-' + catName + '.json';
+    var catFile = makeCategoryFileName(url);
+    var catName = getCategoryName(url);
     var catFilePath = path.join(OUTDIR, catFile);
 
     console.log(catFile);
@@ -23,7 +25,7 @@ sequentialForEach(urls, function(url, goOn) {
     // ensure file with categories top exists first
     if(!fs.existsSync(catFilePath)) {
         console.log('cat file missing', catFilePath);
-        var baseURL = 'https://play.google.com/store/apps/category/' + catName;
+        var baseURL = 'https://play.google.com/store/apps/category/' + catName + '/collection/topselling_free';
         run('phantomjs', [
             './phantom-getTop100Free.js',
             '--num-apps=' + settings.get('numApps'),
@@ -31,7 +33,7 @@ sequentialForEach(urls, function(url, goOn) {
             '--output-file=' + catFile,
             '--top-url=' + baseURL
         ], function(code) {
-            goOn();
+            // goOn();
         }); 
     } else {
         console.log('MEEEOW!', catFilePath);
@@ -43,9 +45,13 @@ sequentialForEach(urls, function(url, goOn) {
     iterateCategories();
 });
 
+
+function getCategoryName(url) {
+    return url.split('/').pop();
+}
+
 function makeCategoryFileName(url) {
-    var catName = url.split('/').pop();
-    var catFile = 'category-' + catName + '.json';
+    var catFile = 'category-' + getCategoryName(url) + '.json';
     return catFile;
 }
 

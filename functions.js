@@ -1,4 +1,5 @@
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 
 function run(command, args, endCallback) {
     
@@ -44,7 +45,19 @@ function sequentialForEach(array, funct, doneCallback) {
 
 }
 
+function getPkgPath(pkg, doneCallback) {
+    exec('adb shell pm path ' + pkg, function(error, stdout, stderr) {
+        if(error) {
+            doneCallback(false);
+        } else {
+            output = stdout.trim();
+            doneCallback(output);
+        }
+    });
+}
+
 module.exports = {
     run: run,
-    sequentialForEach: sequentialForEach
+    sequentialForEach: sequentialForEach,
+    getPkgPath: getPkgPath
 };

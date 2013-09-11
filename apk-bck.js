@@ -2,6 +2,7 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var path = require('path');
 var settings = require('./settings');
+var getPkgPath = require('./functions').getPkgPath;
 
 var packages;
 var currentPackageIndex = 0;
@@ -17,7 +18,7 @@ if(!fs.existsSync(outDir)) {
 
 process.chdir(outDir);
 
-exec('adb shell pm list packages', function(error, stdout, stderr) {
+exec('adb shell pm list packages -3', function(error, stdout, stderr) {
     
 
     if(error) {
@@ -29,6 +30,7 @@ exec('adb shell pm list packages', function(error, stdout, stderr) {
     } else {
 
         packages = stdout.trim().split('\r\n');
+
         processNext();
 
     }
@@ -42,10 +44,14 @@ function processNext() {
 
     pk = pk.replace('package:', '');
 
-    getPckPath(pk, function(devicePath) {
+    getPkgPath(pk, function(devicePath) {
+
         if(devicePath === false) {
+
             nextStep();
+
         } else {
+            
             devicePath = devicePath.replace('package:', '');
             var f = devicePath.split('/').pop();
             
@@ -53,7 +59,7 @@ function processNext() {
     
             if(!fs.existsSync(f)) {
                 console.log('on it...');
-                exec('adb pull /data/app/' + f, function(er, sout, serr) {
+                exec('adb pull ' + devicePath, function(er, sout, serr) {
                     if(er) {
                         console.log(er);
                     }
@@ -69,7 +75,7 @@ function processNext() {
     
 }
 
-function getPckPath(pkg, doneCallback) {
+/*function getPckPath(pkg, doneCallback) {
     exec('adb shell pm path ' + pkg, function(error, stdout, stderr) {
         if(error) {
             doneCallback(false);
@@ -78,7 +84,7 @@ function getPckPath(pkg, doneCallback) {
             doneCallback(output);
         }
     });
-}
+}*/
 
 function uninstall(pkgName, doneCallback) {
     console.log('uninstalling -> ', pkgName);

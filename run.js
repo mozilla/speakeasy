@@ -10,7 +10,7 @@ var appsInfoDir = path.join(outputDir, settings.get('appsInfoDir'));
 
 [outputDir, appsInfoDir].forEach(function(d) {
     if(!fs.existsSync(d)) {
-        fs.makeDirSync(d);
+        fs.mkdirSync(d);
     }
 });
 

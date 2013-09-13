@@ -30,7 +30,7 @@ function loadData(data) {
         tdTotal.innerHTML = app.total;
         
         var tdName = trTitle.insertCell(-1);
-        tdName.innerHTML = app.name;
+        tdName.innerHTML = app.info.title;
 
 
         // Details
@@ -54,6 +54,11 @@ function loadData(data) {
 
             tdAmount.innerHTML = trait.amount.toFixed(2);
             tdDesc.innerHTML = trait.reason;
+
+            console.log(trait.amount.toFixed(2));
+            if (trait.amount.toFixed(2) >= 15) {
+                alert('OMG!')
+            }
 
             var hover = trait.files.join('\n');
 

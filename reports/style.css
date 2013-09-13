@@ -42,3 +42,48 @@ table {
 .traits td:first-child {
     text-align: right;
 }
+
+a {
+    color: black;
+}
+
+.yes.title td::after {
+    color: green;
+    content: " (HTML5!)";
+    font-weight: normal;
+}
+
+.maybe.title td::after {
+    color: purple;
+    content: " (Possibly HTML5!)";
+    font-weight: normal;
+}
+
+.unlikely.title td::after {
+    color: teal;
+    content: " (Unlikely HTML5)";
+    font-weight: normal;
+}
+
+.maybe {
+    font-size: 125%;
+}
+
+.unlikely {
+    font-size: 100%;
+}
+
+.no {
+    font-size: 75%;
+    opacity: .5;
+}
+
+.no.title td::after {
+    color: red;
+    content: " (Not HTML5)";
+    font-weight: normal;
+}
+
+.details {
+    display: none;
+}

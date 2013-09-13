@@ -21,31 +21,54 @@ function loadData(data) {
     var out = document.getElementById('out');
 
     data.forEach(function(app) {
+        var traits = app.traits;
+        traits.sort(makeSorter('amount'));
 
         // Title
         var trTitle = out.insertRow(-1);
         trTitle.className = 'title';
 
-        var tdTotal = trTitle.insertCell(-1);
-        tdTotal.innerHTML = app.total;
-        
-        var tdName = trTitle.insertCell(-1);
-        tdName.innerHTML = app.info.title;
+        // Build up the title:
+        var title = app.info.title;
 
+        // If no HTML files are included, there's no way this is an HTML5
+        // app.
+        var hasHTML = false;
+        traits.forEach(function(trait) {
+            if (trait.reason === 'HTML files found in code') {
+                hasHTML = true;
+            }
+        });
+
+        // var tdTotal = trTitle.insertCell(-1);
+        // tdTotal.innerHTML = app.total;
+
+        var tdName = trTitle.insertCell(-1);
+        tdName.innerHTML = '<a href="#show-more" class="reveal-reasons">' + title + '</a>';
 
         // Details
-
         var trDetails = out.insertRow(-1);
         trDetails.className = 'details';
         var tdDetails = trDetails.insertCell(-1);
         tdDetails.colSpan = 2;
 
+        if (app.total >= 21 && hasHTML) {
+            trTitle.className = trTitle.className + ' yes';
+            trDetails.className = trDetails.className + ' yes';
+        } else if (app.total >= 15 && hasHTML) {
+            trTitle.className = trTitle.className + ' maybe';
+            trDetails.className = trDetails.className + ' maybe';
+        } else if (!hasHTML) {
+            trTitle.className = trTitle.className + ' no';
+            trDetails.className = trDetails.className + ' no';
+        } else {
+            trTitle.className = trTitle.className + ' unlikely';
+            trDetails.className = trDetails.className + ' unlikely';
+        }
+
         var traitsTable = document.createElement('table');
         traitsTable.className = 'traits';
         tdDetails.appendChild(traitsTable);
-
-        var traits = app.traits;
-        traits.sort(makeSorter('amount'));
 
         traits.forEach(function(trait) {
             var traitRow = traitsTable.insertRow(-1);
@@ -55,11 +78,6 @@ function loadData(data) {
             tdAmount.innerHTML = trait.amount.toFixed(2);
             tdDesc.innerHTML = trait.reason;
 
-            console.log(trait.amount.toFixed(2));
-            if (trait.amount.toFixed(2) >= 15) {
-                alert('OMG!')
-            }
-
             var hover = trait.files.join('\n');
 
             traitRow.title = hover;
@@ -67,7 +85,6 @@ function loadData(data) {
         });
 
     });
-
 }
 
 function makeSorter(propertyName) {
@@ -83,3 +100,10 @@ function makeSorter(propertyName) {
         }
     };
 }
+
+$(function() {
+    $('.reveal-reasons').on('click', function() {
+        var $details = $(this).parent().parent().next();
+        $details.toggle();
+    })
+});

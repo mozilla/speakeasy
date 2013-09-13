@@ -254,11 +254,10 @@ function detectHTML5ness(apkDir, doneCallback) {
     if(htmlFiles.length) {
         traits.push({
             amount: 5,
-            reason: 'Presence of HTML files',
+            reason: 'HTML files found in code',
             files: htmlFiles
         });
     }
-
 
     // presence of js files
     var jsFiles = apkFiles.filter(filterJSfiles);
@@ -266,11 +265,10 @@ function detectHTML5ness(apkDir, doneCallback) {
     if(jsFiles.length) {
         traits.push({
             amount: 15,
-            reason: 'Presence of JavaScript files',
+            reason: 'JavaScript files found in code',
             files: jsFiles
         });
     }
-
 
     // classes.dex -> phonegap / ... / classes?
     var javaClasses = apkFiles.filter(filterClassFiles);
@@ -279,7 +277,7 @@ function detectHTML5ness(apkDir, doneCallback) {
     if(phonegapey.length) {
         traits.push({
             amount: 50,
-            reason: 'Presence of Phonegap or similar',
+            reason: 'Phonegap or similar framework found',
             files: phonegapey
         });
     }

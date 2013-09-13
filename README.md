@@ -1,4 +1,3 @@
-
 ## Install dependencies
 
 Please satisfy the dependencies first: node.js, casperjs, phantomjs. A way of doing this in Mac could be:

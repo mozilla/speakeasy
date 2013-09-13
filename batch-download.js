@@ -11,6 +11,8 @@ var APKS_DIR = path.join(OUTDIR, settings.get('apksDir'));
 
 var urls = JSON.parse(fs.readFileSync(path.join(OUTDIR, URLS_FILE)));
 
+console.log(path.join(OUTDIR, URLS_FILE));
+
 var currentURLIndex = 0;
 var sys = require('sys');
 var exec = require('child_process').exec;

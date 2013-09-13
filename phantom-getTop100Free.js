@@ -94,6 +94,8 @@ page.open(TOP_URL, function(status) {
             }
 
             var fs = require('fs');
+            console.log(OUTFILE);
+            console.log(JSON.stringify(appsURLs, null, 4));
             fs.write(OUTFILE, JSON.stringify(appsURLs, null, 4));
 
             phantom.exit();

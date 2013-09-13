@@ -1,3 +1,5 @@
+"use strict";
+
 var util = require('util');
 var fs = require('fs');
 var path = require('path');
@@ -9,44 +11,81 @@ var outputDir = settings.get('outputDir');
 var appsInfoDir = path.join(outputDir, settings.get('appsInfoDir'));
 
 [outputDir, appsInfoDir].forEach(function(d) {
-    if(!fs.existsSync(d)) {
+    if (!fs.existsSync(d)) {
         fs.mkdirSync(d);
     }
 });
 
 var commands = [
-    { cmd: 'phantomjs', args: ['./phantom-getTop100Free.js', '--num-apps=' + settings.get('numApps'), '--output-dir=' + settings.get('outputDir'), '--output-file=' + settings.get('appsJSON') ] },
-    { cmd: 'phantomjs', args: ['./find-categories.js'] },
-    { cmd: 'node', args: ['./batch-download.js'] },
-    { cmd: 'node', args: ['./apk-bck.js'] },
-    { cmd: 'node', args: ['./inspect-apks.js'] }
+    {
+        info: "Create files and folders.",
+        cmd: 'touch',
+        args: [
+            path.join(outputDir, settings.get('urlsJSON'))
+        ]
+    },
+    {
+        info: "Create files and folders.",
+        cmd: 'touch',
+        args: [
+            path.join(outputDir, 'apks')
+        ]
+    },
+    {
+        info: "Get free apps and store their URLs in JSON.",
+        cmd: 'phantomjs',
+        args: [
+            './phantom-getTop100Free.js',
+            '--num-apps=' + settings.get('numApps')
+        ]
+    },
+    {
+        info: "Find category info.",
+        cmd: 'phantomjs',
+        args: [
+            './find-categories.js'
+        ]
+    },
+    {
+        info: "Download APKs to device.",
+        cmd: 'node',
+        args: [
+            './batch-download.js'
+        ]
+    },
+    {
+        info: "Copy APKs from device.",
+        cmd: 'node',
+        args: [
+            './apk-bck.js'
+        ]
+    },
+    {
+        info: "Inspect APKs and generate report.",
+        cmd: 'node',
+        args: [
+            './inspect-apks.js'
+        ]
+    }
 ];
 
-var nextCommandIndex = 0;
-
-executeNextCommand();
-
-
-// ~~~
-
-function executeNextCommand() {
-    if(nextCommandIndex >= commands.length) {
+function executeCommand(index) {
+    if (index >= commands.length) {
         console.log('ALL DONE');
     } else {
-        var nextCommand = commands[nextCommandIndex];
-        console.log(nextCommand);
-        run(nextCommand.cmd, nextCommand.args, function(code) {
-            if(!code) {
-                nextCommandIndex++;
-                executeNextCommand();
+        var commandToRun = commands[index];
+
+        console.log(commandToRun.info);
+
+        run(commandToRun.cmd, commandToRun.args, function(code) {
+            if (!code) {
+                executeCommand(index + 1);
             } else {
-                console.error('There was an error with ' + nextCommand.cmd + ' error code ' + code);
-                console.error('HALTING');
-
+                console.error('There was an error with: ' + commandToRun.cmd)
+                console.error('Error code: ' + code);
             }
-    
-
         });
     }
 }
 
+executeCommand(0);

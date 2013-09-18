@@ -29,7 +29,7 @@ function loadData(data) {
         trTitle.className = 'title';
 
         // Build up the title:
-        var title = app.info.title;
+        var title = app.info !== undefined ? app.info.title : app.name;
 
         // If no HTML files are included, there's no way this is an HTML5
         // app.
@@ -105,5 +105,5 @@ $(function() {
     $('.reveal-reasons').on('click', function() {
         var $details = $(this).parent().parent().next();
         $details.toggle();
-    })
+    });
 });

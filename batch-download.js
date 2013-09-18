@@ -39,55 +39,17 @@ function downloadNext(error, stdout, stderr) {
         
         console.log('pkg name', pkgName);
 
-        //getPkgPath(pkgName, function(pkgPath) {
-            
-/*            var appPath;
+        console.log(currentURLIndex, URLS_FILE, pkgName);
 
-            if(pkgPath === false || pkgPath.length === 0) {
-                filename = pkgName + '-1.apk';
-            } else {
-                filename = pkgPath.split('/').pop();
-            }
-
-            appPath = path.join(OUTDIR, settings.get('apksDir'), filename);
-*/
-            console.log(currentURLIndex, URLS_FILE, pkgName);
-
-            if(apkExistsLocally(pkgName)) {
-
-                console.log('already got that one, skipping');
-                process.nextTick(downloadNext);
-
-            } else {
-
-                var randomTimeout = 100000 * Math.random();
-            
-                console.log('timeout ' + randomTimeout);
-
-                setTimeout(function() {
-                    exec('casperjs download.js --url=' + appURL, function(error, stdout, stderr) {
-                        puts(error, stdout, stderr);
-                        process.nextTick(downloadNext);
-                    });
-                }, randomTimeout);
-
-            }
-
-        //});
-
-        /*var appPath = path.join(OUTDIR, settings.get('apksDir'), pkgName + '-1.apk');
-
-        console.log(currentURLIndex, appPath);
-
-        if(fs.existsSync(appPath)) {
+        if(apkExistsLocally(pkgName)) {
 
             console.log('already got that one, skipping');
             process.nextTick(downloadNext);
 
         } else {
 
-            var randomTimeout = 100000 * Math.random();
-        
+            var randomTimeout = 50000 * Math.random();
+
             console.log('timeout ' + randomTimeout);
 
             setTimeout(function() {
@@ -97,7 +59,7 @@ function downloadNext(error, stdout, stderr) {
                 });
             }, randomTimeout);
 
-        }*/
+        }
 
     }
 

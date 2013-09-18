@@ -63,7 +63,7 @@ function scanNextFile() {
 function nextStep() {
     if(apkIndex < apks.length) {
         
-        process.nextTick(scanNextFile);
+        setImmediate(scanNextFile);
 
     } else {
 

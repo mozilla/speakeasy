@@ -24,7 +24,6 @@ table {
 }
 
 .traits {
-    xborder: 1px dotted black;
 }
 
 .traits tr:nth-child(2n) {

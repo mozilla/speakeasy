@@ -31,45 +31,24 @@ function loadData(data) {
         // Build up the title:
         var title = app.info !== undefined ? app.info.title : app.name;
 
-        // If no HTML files are included, there's no way this is an HTML5
-        // app.
-        var hasHTML = false;
-        traits.forEach(function(trait) {
-            if (trait.reason === 'HTML files found in code') {
-                hasHTML = true;
-            }
-        });
-
-        // var tdTotal = trTitle.insertCell(-1);
-        // tdTotal.innerHTML = app.total;
+        //var tdTotal = trTitle.insertCell(-1);
+        //tdTotal.innerHTML = app.total;
 
         var tdName = trTitle.insertCell(-1);
         tdName.innerHTML = '<a href="#show-more" class="reveal-reasons">' + title + '</a>';
 
         // Details
+        
         var trDetails = out.insertRow(-1);
         trDetails.className = 'details';
         var tdDetails = trDetails.insertCell(-1);
         tdDetails.colSpan = 2;
 
-        if (app.total >= 21 && hasHTML) {
-            trTitle.className = trTitle.className + ' yes';
-            trDetails.className = trDetails.className + ' yes';
-        } else if (app.total >= 15 && hasHTML) {
-            trTitle.className = trTitle.className + ' maybe';
-            trDetails.className = trDetails.className + ' maybe';
-        } else if (!hasHTML) {
-            trTitle.className = trTitle.className + ' no';
-            trDetails.className = trDetails.className + ' no';
-        } else {
-            trTitle.className = trTitle.className + ' unlikely';
-            trDetails.className = trDetails.className + ' unlikely';
-        }
+        tdDetails.innerHTML = '<h2>' + app.total +  ' <a href="https://play.google.com/store/apps/details?id=' + app.name + '" target="_blank" rel="noreferrer">' + app.name + '</a></h2>' + '<br />';
 
         var traitsTable = document.createElement('table');
         traitsTable.className = 'traits';
-        tdDetails.appendChild(traitsTable);
-
+        
         traits.forEach(function(trait) {
             var traitRow = traitsTable.insertRow(-1);
             var tdAmount = traitRow.insertCell(-1);
@@ -84,6 +63,27 @@ function loadData(data) {
 
         });
 
+        tdDetails.appendChild(traitsTable);
+
+
+        var total = app.total;
+        var className = 'no';
+        if(total > 50) {
+            className = 'yes';
+        } else if(total > 30) {
+            className = 'maybe';
+        } else if(total > 15) {
+            className = 'unlikely';
+        }
+
+        trTitle.classList.add(className);
+        trDetails.classList.add(className);
+
+    });
+
+    $('.reveal-reasons').on('click', function() {
+        var $details = $(this).parent().parent().next();
+        $details.toggle();
     });
 }
 
@@ -101,9 +101,4 @@ function makeSorter(propertyName) {
     };
 }
 
-$(function() {
-    $('.reveal-reasons').on('click', function() {
-        var $details = $(this).parent().parent().next();
-        $details.toggle();
-    });
-});
+

@@ -264,7 +264,7 @@ function detectHTML5ness(apkDir, doneCallback) {
 
     if(jsFiles.length) {
         traits.push({
-            amount: 15,
+            amount: 0.1 * jsFiles.length, // 15
             reason: 'JavaScript files found in code',
             files: jsFiles
         });

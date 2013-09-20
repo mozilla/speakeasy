@@ -48,7 +48,7 @@ function downloadNext(error, stdout, stderr) {
 
         } else {
 
-            var randomTimeout = 50000 * Math.random();
+            var randomTimeout = 1000 * Math.random();
 
             console.log('timeout ' + randomTimeout);
 

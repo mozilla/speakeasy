@@ -226,8 +226,10 @@ function filterClassFiles(f) {
 }
 
 
-function filterPhonegapiness(f) {
+function filterJSFrameworkiness(f) {
     var expressions = [
+        /com\/gameclosure/,
+        /com\/ludei/,
         /com\/phonegap/,
         /com\/sencha/,
         /org\/apache\/cordova/,
@@ -272,13 +274,13 @@ function detectHTML5ness(apkDir, doneCallback) {
 
     // classes.dex -> phonegap / ... / classes?
     var javaClasses = apkFiles.filter(filterClassFiles);
-    var phonegapey = javaClasses.filter(filterPhonegapiness);
+    var jsframeworkey = javaClasses.filter(filterJSFrameworkiness);
 
-    if(phonegapey.length) {
+    if(jsframeworkey.length) {
         traits.push({
             amount: 50,
-            reason: 'Phonegap or similar framework found',
-            files: phonegapey
+            reason: 'JavaScript framework detected (Phonegap or similar)',
+            files: jsframeworkey
         });
     }
 

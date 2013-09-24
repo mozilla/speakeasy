@@ -126,7 +126,7 @@ function findTotals() {
 
             totals.push(appEntry);
 
-            process.nextTick(goOn);
+            setImmediate(goOn);
 
         }
 

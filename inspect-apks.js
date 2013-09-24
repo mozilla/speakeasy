@@ -205,7 +205,7 @@ function scanAPK(apkFile, doneCallback) {
 
     exec(cmd, function(error, stdout, stderr) {
         // We can now actually analyse the APK contents
-        detectHTML5ness(extractDir, doneCallback);
+        detectTraits(extractDir, doneCallback);
     });
 
 }
@@ -218,6 +218,11 @@ function filterHTMLfiles(f) {
 
 function filterJSfiles(f) {
     return f.match(/\.js$/i);
+}
+
+
+function filterSWFfiles(f) {
+    return f.match(/\.swf$/i);
 }
 
 
@@ -242,7 +247,7 @@ function filterJSFrameworkiness(f) {
 }
 
 
-function detectHTML5ness(apkDir, doneCallback) {
+function detectTraits(apkDir, doneCallback) {
     console.log('Guessing html5-ness in', apkDir);
 
     var apkFiles = recursiveDirList(apkDir);
@@ -281,6 +286,16 @@ function detectHTML5ness(apkDir, doneCallback) {
             amount: 50,
             reason: 'JavaScript framework detected (Phonegap or similar)',
             files: jsframeworkey
+        });
+    }
+
+    // Not exactly html5 but it might be interesting to find about Air apps too
+    var swfFiles = apkFiles.filter(filterSWFfiles);
+    if(swfFiles.length) {
+        traits.push({
+            amount: 0,
+            reason: 'air',
+            files: swfFiles
         });
     }
 

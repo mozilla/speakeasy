@@ -31,11 +31,11 @@ function loadData(data) {
         // Build up the title:
         var title = app.info !== undefined ? app.info.title : app.name;
 
-        //var tdTotal = trTitle.insertCell(-1);
-        //tdTotal.innerHTML = app.total;
+        var tdTotal = trTitle.insertCell(-1);
+        tdTotal.innerHTML = app.total;
 
         var tdName = trTitle.insertCell(-1);
-        tdName.innerHTML = '<a href="#show-more" class="reveal-reasons">' + title + '</a>';
+        tdName.innerHTML = '<h3><a href="#show-more">' + title + '</a></h3>';
 
         // Details
         
@@ -44,7 +44,7 @@ function loadData(data) {
         var tdDetails = trDetails.insertCell(-1);
         tdDetails.colSpan = 2;
 
-        tdDetails.innerHTML = '<h2>' + app.total +  ' <a href="https://play.google.com/store/apps/details?id=' + app.name + '" target="_blank" rel="noreferrer">' + app.name + '</a></h2>' + '<br />';
+        tdDetails.innerHTML = '<p>Play Store: <a href="https://play.google.com/store/apps/details?id=' + app.name + '" target="_blank" rel="noreferrer">' + app.name + '</a></p>';
 
         var traitsTable = document.createElement('table');
         traitsTable.className = 'traits';
@@ -81,9 +81,9 @@ function loadData(data) {
 
     });
 
-    $('.reveal-reasons').on('click', function() {
-        var $details = $(this).parent().parent().next();
-        $details.toggle();
+    $('tr.title').on('click', function() {
+        $(this).next().toggle();
+        this.classList.toggle('open');
     });
 }
 

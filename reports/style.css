@@ -5,14 +5,27 @@
 
 body {
     font-family: Helvetica, Arial, sans-serif;
+    font-size: 1.2rem;
+    padding: 1rem;
+}
+
+h1, h2, table {
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 0.5rem;
 }
 
 table {
     border-collapse: collapse;
 }
 
+td {
+}
+
 .title {
-    font-size: 180%;
+    cursor: pointer;
 }
 
 .title td:first-child {
@@ -20,7 +33,7 @@ table {
 }
 
 #out > tbody > tr > td {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.25rem 0.5rem 0;
 }
 
 .traits {
@@ -46,43 +59,80 @@ a {
     color: black;
 }
 
-.yes.title td::after {
-    color: green;
-    content: " (HTML5!)";
-    font-weight: normal;
-}
-
-.maybe.title td::after {
-    color: purple;
-    content: " (Possibly HTML5!)";
-    font-weight: normal;
-}
-
-.unlikely.title td::after {
-    color: teal;
-    content: " (Unlikely HTML5)";
-    font-weight: normal;
-}
-
 .maybe {
-    font-size: 125%;
+    font-size: 80%;
 }
 
 .unlikely {
-    font-size: 100%;
+    font-size: 70%;
 }
 
 .no {
-    font-size: 75%;
+    font-size: 60%;
     opacity: .5;
 }
 
-.no.title td::after {
+.title h3:before {
+    content: "▶ ";
+}
+
+.title.open h3:before {
+    content: "▼ ";
+}
+
+.yes.title td h3 a::after {
+    color: green;
+    content: " (HTML5!)";
+}
+
+.maybe.title td h3 a::after {
+    color: purple;
+    content: " (Possibly HTML5!)";
+}
+
+.unlikely.title td h3 a::after {
+    color: teal;
+    content: " (Unlikely HTML5)";
+}
+
+.no.title td h3 a::after {
     color: red;
     content: " (Not HTML5)";
-    font-weight: normal;
 }
 
 .details {
     display: none;
 }
+
+nav {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    padding: 1rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    background: #ffe;
+    color: #999;
+    transition: all 0.5s;
+}
+
+nav:hover {
+    background: #ff0;
+}
+
+nav ul {
+    list-style-position: inside;
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav a {
+    color: #888;
+    text-decoration: none;
+}
+

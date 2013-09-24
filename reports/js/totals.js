@@ -20,13 +20,16 @@ function loadData(data) {
 
     var out = document.getElementById('out');
 
-    data.forEach(function(app) {
+    data.forEach(function(app, appIndex) {
         var traits = app.traits;
         traits.sort(makeSorter('amount'));
 
         // Title
         var trTitle = out.insertRow(-1);
         trTitle.className = 'title';
+
+        var tdCounter = trTitle.insertCell(-1);
+        tdCounter.innerHTML = (appIndex + 1);
 
         // Build up the title:
         var title = app.info !== undefined ? app.info.title : app.name;
@@ -41,8 +44,11 @@ function loadData(data) {
         
         var trDetails = out.insertRow(-1);
         trDetails.className = 'details';
+
+        trDetails.insertCell(-1); // empty
+
         var tdDetails = trDetails.insertCell(-1);
-        tdDetails.colSpan = 2;
+        tdDetails.colSpan = 3;
 
         tdDetails.innerHTML = '<p>Play Store: <a href="https://play.google.com/store/apps/details?id=' + app.name + '" target="_blank" rel="noreferrer">' + app.name + '</a></p>';
 
@@ -81,7 +87,7 @@ function loadData(data) {
 
     });
 
-    $('tr.title').on('click', function() {
+    $('#out tr.title').on('click', function() {
         $(this).next().toggle();
         this.classList.toggle('open');
     });

@@ -28,7 +28,7 @@ td {
     cursor: pointer;
 }
 
-.title td:first-child {
+.title td:nth-child(2) {
     font-weight: bold;
 }
 

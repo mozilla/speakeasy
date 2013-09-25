@@ -104,6 +104,10 @@ a {
     display: none;
 }
 
+ol, ul {
+    list-style-position: inside;
+}
+
 nav {
     position: fixed;
     bottom: 0;

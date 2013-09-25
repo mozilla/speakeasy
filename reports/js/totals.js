@@ -6,7 +6,7 @@ request.onload = function() {
     try {
         var data = request.response;
         var json = JSON.parse(data);
-        loadData(json);
+        onDataLoaded(json);
     } catch(e) {
         console.log('booo when loading data', e);
     }
@@ -14,11 +14,18 @@ request.onload = function() {
 
 request.send();
 
-function loadData(data) {
+function onDataLoaded(data) {
+
+    //makeGlobalReport('out', data.slice(0));
+    makeAirReport('air', data.slice(0));
+
+}
+
+function makeGlobalReport(tableId, data) {
 
     data.sort(makeSorter('total'));
 
-    var out = document.getElementById('out');
+    var out = document.getElementById(tableId);
 
     data.forEach(function(app, appIndex) {
         var traits = app.traits;
@@ -50,7 +57,7 @@ function loadData(data) {
         var tdDetails = trDetails.insertCell(-1);
         tdDetails.colSpan = 3;
 
-        tdDetails.innerHTML = '<p>Play Store: <a href="https://play.google.com/store/apps/details?id=' + app.name + '" target="_blank" rel="noreferrer">' + app.name + '</a></p>';
+        tdDetails.innerHTML = '<p>Play Store: <a href="' + getAppURL(app.name) + '" target="_blank" rel="noreferrer">' + app.name + '</a></p>';
 
         var traitsTable = document.createElement('table');
         traitsTable.className = 'traits';
@@ -87,11 +94,46 @@ function loadData(data) {
 
     });
 
-    $('#out tr.title').on('click', function() {
+    $('#' + tableId + ' tr.title').on('click', function() {
         $(this).next().toggle();
         this.classList.toggle('open');
     });
+
 }
+
+function makeAirReport(containerId, data) {
+    var airApps = data.filter(function(appInfo) {
+        var airTraits = appInfo.traits.filter(function(trait) {
+            if(trait.reason === 'air') {
+                return trait;
+            }
+        });
+        return airTraits.length > 0;
+    });
+
+    var container = document.getElementById(containerId);
+    var percentage = (airApps.length * 100.0 / data.length).toFixed(2);
+
+    container.innerHTML = '<p>' + percentage + '% of ' + data.length + ' apps</p>';
+
+    var list = document.createElement('ol');
+    container.appendChild(list);
+
+    airApps.sort(function(a, b) {
+        return a.info.title.toLowerCase() > b.info.title.toLowerCase();
+    });
+
+    airApps.forEach(function(app) {
+        var li = document.createElement('li'); 
+        li.innerHTML = app.info.title + ' (<a href="' + getAppURL(app.name) + '">play store</a>)';
+        list.appendChild(li);
+    });
+}
+
+function getAppURL(packageName) {
+    return 'https://play.google.com/store/apps/details?id=' + packageName;
+}
+
 
 function makeSorter(propertyName) {
     return function(a, b) {

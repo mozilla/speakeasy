@@ -32,7 +32,7 @@ td {
     font-weight: bold;
 }
 
-#out > tbody > tr > td {
+#out td {
     padding: 0.5rem 0.25rem 0.5rem 0;
 }
 
@@ -140,3 +140,12 @@ nav a {
     text-decoration: none;
 }
 
+/* graph SVG */
+.slice path {
+    stroke: #fff;
+}
+
+.slice text {
+    font-size: 10px;
+    text-transform: uppercase;
+}

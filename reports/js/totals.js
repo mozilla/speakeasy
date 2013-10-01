@@ -3,29 +3,41 @@ var request = new XMLHttpRequest();
 request.open('GET', 'totals.json', true);
 request.responseType = 'text';
 request.onload = function() {
-    try {
+    //try {
         var data = request.response;
         var json = JSON.parse(data);
         onDataLoaded(json);
-    } catch(e) {
-        console.log('booo when loading data', e);
-    }
+    //} catch(e) {
+    //    console.log('booo when loading data', e);
+    //}
 };
 
 request.send();
 
 function onDataLoaded(data) {
 
-    //makeGlobalReport('out', data.slice(0));
+    var totals = document.getElementById('totals');
+    totals.innerHTML = '<p>' + data.length + ' apps</p>';
+
+    makeGlobalReport('out', data.slice(0));
     makeAirReport('air', data.slice(0));
 
 }
+
 
 function makeGlobalReport(tableId, data) {
 
     data.sort(makeSorter('total'));
 
-    var out = document.getElementById(tableId);
+    var div = document.getElementById(tableId);
+    var out = document.createElement('table');
+
+    var groups = {
+        yes: 0,
+        maybe: 0,
+        unlikely: 0,
+        no: 0
+    };
 
     data.forEach(function(app, appIndex) {
         var traits = app.traits;
@@ -63,6 +75,7 @@ function makeGlobalReport(tableId, data) {
         traitsTable.className = 'traits';
         
         traits.forEach(function(trait) {
+
             var traitRow = traitsTable.insertRow(-1);
             var tdAmount = traitRow.insertCell(-1);
             var tdDesc = traitRow.insertCell(-1);
@@ -89,10 +102,17 @@ function makeGlobalReport(tableId, data) {
             className = 'unlikely';
         }
 
+        groups[className]++;
+
         trTitle.classList.add(className);
         trDetails.classList.add(className);
 
     });
+
+    // summary - chart with % of html5 likeability
+    appendPieChart('#' + div.id, groups);
+
+    div.appendChild(out);
 
     $('#' + tableId + ' tr.title').on('click', function() {
         $(this).next().toggle();
@@ -114,7 +134,7 @@ function makeAirReport(containerId, data) {
     var container = document.getElementById(containerId);
     var percentage = (airApps.length * 100.0 / data.length).toFixed(2);
 
-    container.innerHTML = '<p>' + percentage + '% of ' + data.length + ' apps</p>';
+    container.innerHTML = '<p><strong>' + percentage + '%</strong> of ' + data.length + ' apps</p>';
 
     var list = document.createElement('ol');
     container.appendChild(list);
@@ -149,4 +169,54 @@ function makeSorter(propertyName) {
     };
 }
 
+function appendPieChart(selector, values) {
+    console.log('appendPie', selector);
+    console.log(values);
 
+    var data = [];
+    for(var k in values) {
+        data.push({ label: k, value: values[k] });
+    }
+
+    var width = 200;
+    var height = 200;
+
+    var r = Math.min(width, height) / 2;
+    var w = width;
+    var h = height;
+
+    var color = d3.scale.category20c();
+    var vis = d3.select(selector)
+        .append("svg:svg")
+        .data([data])
+        .attr("width", w)
+        .attr("height", h)
+        .append("svg:g")
+        .attr("transform", "translate(" + r + "," + r + ")");
+
+    var arc = d3.svg.arc()
+        .outerRadius(r);
+
+    var pie = d3.layout.pie()
+        .value(function(d) { return d.value; });
+
+    var arcs = vis.selectAll("g.slice")
+        .data(pie)
+        .enter()
+        .append("svg:g")
+        .attr("class", "slice");
+
+    arcs.append("svg:path")
+        .attr("fill", function(d, i) { return color(i); } )
+        .attr("d", arc);
+
+    arcs.append("svg:text")
+        .attr("transform", function(d) {
+            d.innerRadius = 0;
+            d.outerRadius = r;
+            return "translate(" + arc.centroid(d) + ")";
+        })
+        .attr("text-anchor", "middle")
+        .text(function(d, i) { return data[i].label; });
+
+}

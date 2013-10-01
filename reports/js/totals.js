@@ -174,28 +174,31 @@ function appendPieChart(selector, values) {
     console.log(values);
 
     var data = [];
+    var totals = 0;
     for(var k in values) {
         data.push({ label: k, value: values[k] });
+        totals += values[k];
     }
 
     var width = 200;
     var height = 200;
 
     var r = Math.min(width, height) / 2;
+    var graphRadius = r * 0.75;
     var w = width;
     var h = height;
 
     var color = d3.scale.category20c();
     var vis = d3.select(selector)
         .append("svg:svg")
-        .data([data])
-        .attr("width", w)
-        .attr("height", h)
-        .append("svg:g")
-        .attr("transform", "translate(" + r + "," + r + ")");
+            .data([data])
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+                .attr("transform", "translate(" + r + "," + r + ")");
 
     var arc = d3.svg.arc()
-        .outerRadius(r);
+        .outerRadius(graphRadius);
 
     var pie = d3.layout.pie()
         .value(function(d) { return d.value; });
@@ -211,12 +214,25 @@ function appendPieChart(selector, values) {
         .attr("d", arc);
 
     arcs.append("svg:text")
-        .attr("transform", function(d) {
-            d.innerRadius = 0;
-            d.outerRadius = r;
-            return "translate(" + arc.centroid(d) + ")";
+        .attr('transform', function(d) {
+            var alpha = (d.endAngle - d.startAngle) * 0.5 + d.startAngle;
+            var dist = r * 0.80;
+            return 'translate(' + ( dist * Math.sin( alpha ) ) + ',' + ( -1 * dist * Math.cos( alpha ) ) + ') rotate(' + angle(d) + ')';
         })
-        .attr("text-anchor", "middle")
-        .text(function(d, i) { return data[i].label; });
+        .style('text-anchor', function(d) {
+            var rads = ((d.endAngle - d.startAngle) / 2) + d.startAngle;
+            if(rads >= 0 && rads <= Math.PI) {
+                return 'start';
+            } else {
+                return 'end';
+            }
+        })
+        .text(function(d, i) { return Math.round(data[i].value * 100.0 / totals) + '% ' + data[i].label; });
+
+
+    function angle(d) {
+      var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+      return a > 90 ? a - 180 : a;
+    }
 
 }

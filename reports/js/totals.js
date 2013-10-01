@@ -180,11 +180,12 @@ function appendPieChart(selector, values) {
         totals += values[k];
     }
 
-    var width = 200;
-    var height = 200;
+    var width = 300;
+    var height = 300;
 
-    var r = Math.min(width, height) / 2;
-    var graphRadius = r * 0.75;
+    var radius = Math.min(width, height) / 2;
+    var percGraph = 0.5;
+    var graphRadius = radius * percGraph;
     var w = width;
     var h = height;
 
@@ -195,7 +196,7 @@ function appendPieChart(selector, values) {
             .attr("width", w)
             .attr("height", h)
             .append("svg:g")
-                .attr("transform", "translate(" + r + "," + r + ")");
+                .attr("transform", "translate(" + radius + "," + radius + ")");
 
     var arc = d3.svg.arc()
         .outerRadius(graphRadius);
@@ -203,21 +204,22 @@ function appendPieChart(selector, values) {
     var pie = d3.layout.pie()
         .value(function(d) { return d.value; });
 
-    var arcs = vis.selectAll("g.slice")
+    var arcs = vis.selectAll('g.slice')
         .data(pie)
         .enter()
-        .append("svg:g")
-        .attr("class", "slice");
+        .append('svg:g')
+        .attr('class', 'slice');
 
-    arcs.append("svg:path")
-        .attr("fill", function(d, i) { return color(i); } )
-        .attr("d", arc);
+    arcs.append('svg:path')
+        .attr('fill', function(d, i) { return color(i); } )
+        .attr('d', arc);
 
-    arcs.append("svg:text")
+    arcs.append('svg:text')
+        .attr('dy', '5px')
         .attr('transform', function(d) {
             var alpha = (d.endAngle - d.startAngle) * 0.5 + d.startAngle;
-            var dist = r * 0.80;
-            return 'translate(' + ( dist * Math.sin( alpha ) ) + ',' + ( -1 * dist * Math.cos( alpha ) ) + ') rotate(' + angle(d) + ')';
+            var dist = radius * (percGraph + 0.05);
+            return 'translate(' + ( dist * Math.sin( alpha ) ) + ',' + ( - dist * Math.cos( alpha ) ) + ') rotate(' + angle(d) + ')';
         })
         .style('text-anchor', function(d) {
             var rads = ((d.endAngle - d.startAngle) / 2) + d.startAngle;
@@ -231,8 +233,8 @@ function appendPieChart(selector, values) {
 
 
     function angle(d) {
-      var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
-      return a > 90 ? a - 180 : a;
+        var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+        return a > 90 ? a - 180 : a;
     }
 
 }

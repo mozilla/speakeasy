@@ -140,6 +140,12 @@ nav a {
     text-decoration: none;
 }
 
+#category-breakdown > div {
+    display: inline-block;
+    width: 20rem;
+    border: 1px dotted #ccc;
+}
+
 /* graph SVG */
 .slice path {
     stroke: #fff;

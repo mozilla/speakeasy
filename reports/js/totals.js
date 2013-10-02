@@ -268,8 +268,6 @@ function makeCategorisedReport(data) {
 
         });
 
-        console.log(catName, numApps);
-
         var div = document.createElement('div');
         div.id = 'categoryBreakdown-' + catName;
 
@@ -304,8 +302,6 @@ function makeSorter(propertyName) {
 }
 
 function appendPieChart(selector, values) {
-    console.log('appendPie', selector);
-    console.log(values);
 
     var data = [];
     var totals = 0;
@@ -323,7 +319,13 @@ function appendPieChart(selector, values) {
     var w = width;
     var h = height;
 
-    var color = d3.scale.category20c();
+    var color = {
+        'yes': '#00aa00',
+        'maybe': '#eeff00',
+        'unlikely': '#dd9900',
+        'no': '#ff0000'
+    }; //d3.scale.category20c();
+
     var vis = d3.select(selector)
         .append("svg:svg")
             .data([data])
@@ -345,7 +347,7 @@ function appendPieChart(selector, values) {
         .attr('class', 'slice');
 
     arcs.append('svg:path')
-        .attr('fill', function(d, i) { return color(i); } )
+        .attr('fill', function(d, i) { var label = data[i].label; return color[label]; } )
         .attr('d', arc);
 
     arcs.append('svg:text')

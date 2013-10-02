@@ -1,21 +1,7 @@
-var globalData = {};
-
-/*var request = new XMLHttpRequest();
-
-request.open('GET', 'totals.json', true);
-request.responseType = 'text';
-request.onload = function() {
-    //try {
-        var data = request.response;
-        var json = JSON.parse(data);
-        onDataLoaded(json);
-    //} catch(e) {
-    //    console.log('booo when loading data', e);
-    //}
+var globalData = {
+    totals: [],
+    categories: {}
 };
-
-request.send();
-*/
 
 window.onload = function() {
     loadJSONFiles([
@@ -103,6 +89,7 @@ function* iterator(arr) {
 function onAllDataLoaded() {
 
     onDataLoaded(globalData.totals);
+    makeCategorisedReport(globalData);
 
 }
 
@@ -185,14 +172,8 @@ function makeGlobalReport(tableId, data) {
 
 
         var total = app.total;
-        var className = 'no';
-        if(total > 50) {
-            className = 'yes';
-        } else if(total > 30) {
-            className = 'maybe';
-        } else if(total > 15) {
-            className = 'unlikely';
-        }
+        
+        var className = isHTML5(total);
 
         groups[className]++;
 
@@ -211,6 +192,21 @@ function makeGlobalReport(tableId, data) {
         this.classList.toggle('open');
     });
 
+}
+
+function isHTML5(total) {
+
+    var className = 'no';
+
+    if(total > 50) {
+        className = 'yes';
+    } else if(total > 30) {
+        className = 'maybe';
+    } else if(total > 15) {
+        className = 'unlikely';
+    }
+
+    return className;
 }
 
 function makeAirReport(containerId, data) {
@@ -240,6 +236,52 @@ function makeAirReport(containerId, data) {
         li.innerHTML = app.info.title + ' (<a href="' + getAppURL(app.name) + '">play store</a>)';
         list.appendChild(li);
     });
+}
+
+function makeCategorisedReport(data) {
+
+    var categories = data.categories;
+    var totals = data.totals;
+    var categoryBreakdown = document.getElementById('category-breakdown')
+
+    for(var catName in categories) {
+        var catData = categories[catName];
+
+        var appsInCategory = totals.filter(function(app) {
+            var pkgName = app.name;
+            return catData.indexOf(pkgName) !== -1; 
+        });
+        
+        var numApps = appsInCategory.length;
+        var groups = {};
+
+        appsInCategory.forEach(function(app) {
+
+            var total = app.total;
+            var html5ness = isHTML5(total);
+
+            if(groups[html5ness] === undefined) {
+                groups[html5ness] = 0;
+            } else {
+                groups[html5ness]++;
+            }
+
+        });
+
+        console.log(catName, numApps);
+
+        var div = document.createElement('div');
+        div.id = 'categoryBreakdown-' + catName;
+
+        categoryBreakdown.appendChild(div);
+
+        var h3 = document.createElement('h3');
+        h3.innerHTML = catName + ' ' + numApps;
+        div.appendChild(h3);
+
+        appendPieChart('#' + div.id, groups);
+        
+    };
 }
 
 function getAppURL(packageName) {

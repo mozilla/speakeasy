@@ -146,6 +146,10 @@ nav a {
     border: 1px dotted #ccc;
 }
 
+#category-breakdown > table td {
+    padding: 0.25rem;
+}
+
 /* graph SVG */
 .slice path {
     stroke: #fff;

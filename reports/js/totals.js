@@ -242,10 +242,18 @@ function makeCategorisedReport(data) {
 
     var categories = data.categories;
     var totals = data.totals;
-    var categoryBreakdown = document.getElementById('category-breakdown')
+    var categoryBreakdown = document.getElementById('category-breakdown');
+    var outputTable = document.createElement('table');
+    var results = [];
+    var keys = [ 'yes', 'maybe', 'unlikely', 'no' ];
+
+
+    categoryBreakdown.appendChild(outputTable);
 
     for(var catName in categories) {
+
         var catData = categories[catName];
+        var groups = {};
 
         var appsInCategory = totals.filter(function(app) {
             var pkgName = app.name;
@@ -253,8 +261,8 @@ function makeCategorisedReport(data) {
         });
         
         var numApps = appsInCategory.length;
-        var groups = {};
 
+        // Count how many apps fall in each 'html5 likeability' group
         appsInCategory.forEach(function(app) {
 
             var total = app.total;
@@ -278,8 +286,52 @@ function makeCategorisedReport(data) {
         div.appendChild(h3);
 
         appendPieChart('#' + div.id, groups);
+
+        var numYes = groups.yes !== undefined ? groups.yes : 0;
+        var yesPerc = Math.round(numYes * 10000.0 / appsInCategory.length) / 100;
+
+        results.push({ name: catName, groups: groups, yesPerc: yesPerc, count: appsInCategory.length });
         
     };
+
+    results.sort(function(a, b) {
+
+        var yesA = a.yesPerc;
+        var yesB = b.yesPerc;
+
+        return yesB - yesA;
+
+    });
+
+    
+    var tr = outputTable.insertRow(-1);
+    keys.forEach(function(k) {
+        var cell = tr.insertCell(-1);
+        cell.innerHTML = k;
+    });
+
+    results.forEach(function(r) {
+
+        var row = outputTable.insertRow(-1);
+        
+        keys.forEach(function(k) {
+            var cell = row.insertCell(-1);
+            var value = r.groups[k];
+
+            if(value === undefined) {
+                value = 0;
+            }
+
+            cell.innerHTML = value;
+        });
+
+        row.insertCell(-1).innerHTML = r.yesPerc + '%';
+        row.insertCell(-1).innerHTML = r.count;
+
+        row.insertCell(-1).innerHTML = r.name;
+
+
+    });
 }
 
 function getAppURL(packageName) {
@@ -324,7 +376,7 @@ function appendPieChart(selector, values) {
         'maybe': '#eeff00',
         'unlikely': '#dd9900',
         'no': '#ff0000'
-    }; //d3.scale.category20c();
+    };
 
     var vis = d3.select(selector)
         .append("svg:svg")
@@ -365,7 +417,7 @@ function appendPieChart(selector, values) {
                 return 'end';
             }
         })
-        .text(function(d, i) { return Math.round(data[i].value * 100.0 / totals) + '% ' + data[i].label; });
+        .text(function(d, i) { return (Math.round(data[i].value * 10000.0 / totals)/100) + '% ' + data[i].label; });
 
 
     function angle(d) {

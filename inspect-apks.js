@@ -136,6 +136,7 @@ function findTotals() {
         fs.writeFileSync(path.join(OUT_DIR, 'totals.json'), jsonString);
         fs.writeFileSync(path.join(REPORTS_DIR, 'totals.json'), jsonString);
 
+        exec('cp ' + OUT_DIR + '/categor*.json ' + REPORTS_DIR);
     });
 
 }

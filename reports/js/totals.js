@@ -1,4 +1,6 @@
-var request = new XMLHttpRequest();
+var globalData = {};
+
+/*var request = new XMLHttpRequest();
 
 request.open('GET', 'totals.json', true);
 request.responseType = 'text';
@@ -13,6 +15,96 @@ request.onload = function() {
 };
 
 request.send();
+*/
+
+window.onload = function() {
+    loadJSONFiles([
+        [ 'totals.json', onTotalsLoaded ],
+        [ 'categories.json', onCategoriesLoaded ]
+    ]);
+};
+
+function loadJSONFiles(filesList, doneCallback) {
+    
+    doneCallback = doneCallback || function() {};
+
+    var filesIter = iterator(filesList);
+    var loadNext = function() {
+
+        var nextValue = filesIter.next();
+
+        if(nextValue.done) {
+            doneCallback();
+        } else {
+            var tuple = nextValue.value;
+            var request = new XMLHttpRequest();
+            var jsonURL = tuple[0];
+            var jsonCallback = tuple[1];
+
+            request.open('GET', jsonURL);
+            request.responseType = 'text';
+            request.onload = function() {
+
+                console.log('loaded', jsonURL);
+
+                var data = JSON.parse(request.response);
+
+                if(jsonCallback) {
+                    jsonCallback(data);
+                }
+
+                setTimeout(loadNext, 1);
+            };
+
+            request.send();
+        }
+    };
+
+    loadNext();
+
+}
+
+function onTotalsLoaded(data) {
+    console.log('totals loaded', data.length);
+    globalData.totals = data;
+}
+
+
+function onCategoriesLoaded(data) {
+    console.log('cats loaded', data.length);
+    var catJSONs = data.map(function(d) {
+        var name = d.split('/').pop();
+        return [ 'category-' + name + '.json', function(catData) {
+            onCategoryLoaded(name, catData);
+        } ];
+    });
+    console.log(catJSONs);
+
+    globalData.categories = {};
+
+    loadJSONFiles(catJSONs, onAllDataLoaded);
+    
+}
+
+
+function onCategoryLoaded(categoryName, data) {
+    console.log('loaded category', categoryName);
+    globalData.categories[categoryName] = data.map(function(d) {
+        return d.split('=').pop();
+    });
+}
+
+function* iterator(arr) {
+    for(var i = 0; i < arr.length; i++) {
+        yield arr[i];
+    }
+}
+
+function onAllDataLoaded() {
+
+    onDataLoaded(globalData.totals);
+
+}
 
 function onDataLoaded(data) {
 

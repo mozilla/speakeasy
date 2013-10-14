@@ -208,7 +208,7 @@ function findApp(array, pkgName) {
             return app;
         }
     }
-    console.log('not found', pkgName);
+    
     return null;
 }
 

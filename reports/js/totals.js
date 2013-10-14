@@ -208,6 +208,7 @@ function findApp(array, pkgName) {
             return app;
         }
     }
+    console.log('not found', pkgName);
     return null;
 }
 
@@ -283,7 +284,8 @@ function makeMostPopularReport(data) {
             var tr = table.insertRow(-1);
 
             var tdTitle = tr.insertCell(-1);
-            tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + app.info.title + '</a>';
+            var appTitle = app.info !== undefined ? app.info.title : pkgName;
+            tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + appTitle + '</a>';
 
             var tdHTML5ness = tr.insertCell(-1);
             var html5ness = isHTML5(app.total);

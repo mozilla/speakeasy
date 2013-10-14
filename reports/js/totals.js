@@ -226,15 +226,18 @@ function isHTML5(total) {
     return className;
 }
 
-function makeAirReport(containerId, data) {
-    var airApps = data.filter(function(appInfo) {
-        var airTraits = appInfo.traits.filter(function(trait) {
-            if(trait.reason === 'air') {
-                return trait;
-            }
-        });
-        return airTraits.length > 0;
+
+function isAir(appInfo) {
+    var airTraits = appInfo.traits.filter(function(trait) {
+        if(trait.reason === 'air') {
+            return trait;
+        }
     });
+    return airTraits.length > 0;
+}
+
+function makeAirReport(containerId, data) {
+    var airApps = data.filter(isAir);
 
     var container = document.getElementById(containerId);
     var percentage = (airApps.length * 100.0 / data.length).toFixed(2);
@@ -256,7 +259,6 @@ function makeAirReport(containerId, data) {
 }
 
 function makeMostPopularReport(data) {
-    // appurls -> get pck name, total has the details
 
     var outElement = document.getElementById('popular');
     var overview = document.createElement('div');
@@ -268,6 +270,9 @@ function makeMostPopularReport(data) {
 
     outElement.appendChild(overview);
     outElement.appendChild(table);
+
+    var trHead = table.insertRow(-1);
+    trHead.innerHTML = '<td></td><td>html5?</td><td>air?</td>';
     
     popular.forEach(function(appUrl) {
 
@@ -289,6 +294,9 @@ function makeMostPopularReport(data) {
             } else {
                 aggregate[html5ness]++;
             }
+
+            var airness = tr.insertCell(-1);
+            airness.innerHTML = isAir(app) ? 'yes' : '';
 
         }
 

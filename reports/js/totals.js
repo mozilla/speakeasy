@@ -330,6 +330,7 @@ function makeCategorisedReport(data) {
 
         var catData = categories[catName];
         var groups = {};
+        var airness = 0;
 
         var appsInCategory = totals.filter(function(app) {
             var pkgName = app.name;
@@ -350,6 +351,10 @@ function makeCategorisedReport(data) {
                 groups[html5ness]++;
             }
 
+            if(isAir(app)) {
+                airness++;
+            }
+
         });
 
         var div = document.createElement('div');
@@ -365,8 +370,9 @@ function makeCategorisedReport(data) {
 
         var numYes = groups.yes !== undefined ? groups.yes : 0;
         var yesPerc = Math.round(numYes * 10000.0 / appsInCategory.length) / 100;
+        var airPerc = Math.round(airness * 10000.0 / appsInCategory.length) / 100;
 
-        results.push({ name: catName, groups: groups, yesPerc: yesPerc, count: appsInCategory.length });
+        results.push({ name: catName, groups: groups, yesPerc: yesPerc, air: airness, airPerc: airPerc, count: appsInCategory.length });
         
     };
 
@@ -386,6 +392,11 @@ function makeCategorisedReport(data) {
         cell.innerHTML = k;
     });
 
+    tr.insertCell(-1).innerHTML = 'yes %';
+    tr.insertCell(-1).innerHTML = '# apps';
+    tr.insertCell(-1).innerHTML = '# air';
+    tr.insertCell(-1).innerHTML = '% air';
+
     results.forEach(function(r) {
 
         var row = outputTable.insertRow(-1);
@@ -403,6 +414,9 @@ function makeCategorisedReport(data) {
 
         row.insertCell(-1).innerHTML = r.yesPerc + '%';
         row.insertCell(-1).innerHTML = r.count;
+
+        row.insertCell(-1).innerHTML = r.air;
+        row.insertCell(-1).innerHTML = r.airPerc + '%';
 
         row.insertCell(-1).innerHTML = r.name;
 

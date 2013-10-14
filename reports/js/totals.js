@@ -268,6 +268,7 @@ function makeMostPopularReport(data) {
     var numPopularApps = popular.length;
     var totalApps = data.totals;
     var aggregate = {};
+    var airAmount = 0;
 
     outElement.appendChild(overview);
     outElement.appendChild(table);
@@ -298,7 +299,12 @@ function makeMostPopularReport(data) {
             }
 
             var airness = tr.insertCell(-1);
-            airness.innerHTML = isAir(app) ? 'yes' : '';
+            var air = isAir(app);
+            airness.innerHTML = air ? 'yes' : '';
+            
+            if(air) {
+                airAmount++;
+            }
 
         }
 
@@ -308,10 +314,10 @@ function makeMostPopularReport(data) {
 
     for(var k in aggregate) {
         var value = aggregate[k];
-        txtOverview += '<p>' + k + ' ' + (Math.round(value * 10000 / numPopularApps) / 100 ) + '%</p>';
+        txtOverview += '<p>' + k + ' ' + (Math.round(value * 10000 / numPopularApps) / 100 ) + '% (' + value + ')</p>';
     }
 
-    overview.innerHTML = txtOverview;
+    overview.innerHTML = txtOverview + '<br /><p>air: ' + airAmount + '</p>';
 
 
 }

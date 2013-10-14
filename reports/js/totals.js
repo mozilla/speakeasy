@@ -5,6 +5,7 @@ var globalData = {
 
 window.onload = function() {
     loadJSONFiles([
+        [ 'appsURLs.json', onMostPopularLoaded ],
         [ 'totals.json', onTotalsLoaded ],
         [ 'categories.json', onCategoriesLoaded ]
     ]);
@@ -50,6 +51,11 @@ function loadJSONFiles(filesList, doneCallback) {
 
 }
 
+function onMostPopularLoaded(data) {
+    console.log('most popular loaded', data.length);
+    globalData.mostPopular = data;
+}
+
 function onTotalsLoaded(data) {
     console.log('totals loaded', data.length);
     globalData.totals = data;
@@ -90,7 +96,8 @@ function onAllDataLoaded() {
 
     onDataLoaded(globalData.totals);
     makeCategorisedReport(globalData);
-
+    makeMostPopularReport(globalData);
+    
 }
 
 function onDataLoaded(data) {
@@ -194,6 +201,16 @@ function makeGlobalReport(tableId, data) {
 
 }
 
+function findApp(array, pkgName) {
+    for(var i = 0; i < array.length; i++) {
+        var app = array[i];
+        if(app.name === pkgName) {
+            return app;
+        }
+    }
+    return null;
+}
+
 function isHTML5(total) {
 
     var className = 'no';
@@ -236,6 +253,57 @@ function makeAirReport(containerId, data) {
         li.innerHTML = app.info.title + ' (<a href="' + getAppURL(app.name) + '">play store</a>)';
         list.appendChild(li);
     });
+}
+
+function makeMostPopularReport(data) {
+    // appurls -> get pck name, total has the details
+
+    var outElement = document.getElementById('popular');
+    var overview = document.createElement('div');
+    var table = document.createElement('table');
+    var popular = data.mostPopular;
+    var numPopularApps = popular.length;
+    var totalApps = data.totals;
+    var aggregate = {};
+
+    outElement.appendChild(overview);
+    outElement.appendChild(table);
+    
+    popular.forEach(function(appUrl) {
+
+        var pkgName = getAppPackageName(appUrl);
+        var app = findApp(totalApps, pkgName);
+
+        if(app !== null) {
+            var tr = table.insertRow(-1);
+
+            var tdTitle = tr.insertCell(-1);
+            tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + pkgName + '</a>';
+
+            var tdHTML5ness = tr.insertCell(-1);
+            var html5ness = isHTML5(app.total);
+            tdHTML5ness.innerHTML = html5ness;
+
+            if(aggregate[html5ness] === undefined) {
+                aggregate[html5ness] = 1;
+            } else {
+                aggregate[html5ness]++;
+            }
+
+        }
+
+    });
+
+    var txtOverview = '<p>' + numPopularApps + ' apps' + '</p>';
+
+    for(var k in aggregate) {
+        var value = aggregate[k];
+        txtOverview += '<p>' + k + ' ' + (Math.round(value * 10000 / numPopularApps) / 100 ) + '%</p>';
+    }
+
+    overview.innerHTML = txtOverview;
+
+
 }
 
 function makeCategorisedReport(data) {
@@ -336,6 +404,10 @@ function makeCategorisedReport(data) {
 
 function getAppURL(packageName) {
     return 'https://play.google.com/store/apps/details?id=' + packageName;
+}
+
+function getAppPackageName(url) {
+    return url.split('=').pop();
 }
 
 

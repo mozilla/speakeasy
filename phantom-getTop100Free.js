@@ -27,6 +27,7 @@ if(args.length >= 1) {
 console.log('reading from', TOP_URL);
 console.log('using out dir', OUTDIR);
 var OUTFILE = OUTDIR + '/' + OUTFILENAME;
+var REPORTS_OUTFILE = './reports/' + OUTFILENAME;
 console.log('output', OUTFILE);
 
 
@@ -94,9 +95,11 @@ page.open(TOP_URL, function(status) {
             }
 
             var fs = require('fs');
+            var stringified = JSON.stringify(appsURLs, null, 4);
             console.log(OUTFILE);
-            console.log(JSON.stringify(appsURLs, null, 4));
-            fs.write(OUTFILE, JSON.stringify(appsURLs, null, 4));
+            console.log(stringified);
+            fs.write(OUTFILE, stringified);
+            fs.write(REPORTS_OUTFILE, stringified);
 
             phantom.exit();
         }

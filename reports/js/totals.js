@@ -278,7 +278,7 @@ function makeMostPopularReport(data) {
             var tr = table.insertRow(-1);
 
             var tdTitle = tr.insertCell(-1);
-            tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + pkgName + '</a>';
+            tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + app.info.title + '</a>';
 
             var tdHTML5ness = tr.insertCell(-1);
             var html5ness = isHTML5(app.total);

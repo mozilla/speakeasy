@@ -355,7 +355,7 @@ function makeCategorisedReport(data) {
             var html5ness = isHTML5(total);
 
             if(groups[html5ness] === undefined) {
-                groups[html5ness] = 0;
+                groups[html5ness] = 1;
             } else {
                 groups[html5ness]++;
             }

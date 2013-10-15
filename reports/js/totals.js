@@ -339,6 +339,7 @@ function makeCategorisedReport(data) {
         var catData = categories[catName];
         var groups = {};
         var airness = 0;
+        var yesApps = [];
 
         var appsInCategory = totals.filter(function(app) {
             var pkgName = app.name;
@@ -363,6 +364,10 @@ function makeCategorisedReport(data) {
                 airness++;
             }
 
+            if(html5ness === 'yes') {
+                yesApps.push(app);
+            }
+
         });
 
         var div = document.createElement('div');
@@ -380,7 +385,9 @@ function makeCategorisedReport(data) {
         var yesPerc = Math.round(numYes * 10000.0 / appsInCategory.length) / 100;
         var airPerc = Math.round(airness * 10000.0 / appsInCategory.length) / 100;
 
-        results.push({ name: catName, groups: groups, yesPerc: yesPerc, air: airness, airPerc: airPerc, count: appsInCategory.length });
+        results.push({ name: catName, groups: groups, yesPerc: yesPerc, air: airness, airPerc: airPerc, count: appsInCategory.length, yesPackages: yesApps.map(function(app) {
+            return app.name;
+        }).join('<br />') });
         
     };
 
@@ -428,6 +435,7 @@ function makeCategorisedReport(data) {
 
         row.insertCell(-1).innerHTML = r.name;
 
+        row.insertCell(-1).innerHTML = '<div>' + r.yesPackages + '</div>';
 
     });
 }

@@ -160,6 +160,11 @@ nav a {
 
 #category-breakdown > table td {
     padding: 0.25rem;
+    vertical-align: top;
+}
+
+#category-breakdown div {
+    font-size: 0.7rem;
 }
 
 /* graph SVG */

@@ -9,14 +9,15 @@ var OUT_DIR = settings.get('outputDir');
 var REPORTS_DIR = settings.get('reportsDir');
 var APKS_DIR = path.join(OUT_DIR, settings.get('apksDir'));
 var ZIPS_DIR = path.join(OUT_DIR, settings.get('zipsDir'));
-var TRAITS_DIR = path.join(OUT_DIR, settings.get('traitsDir'));
+var TRAITS_HTML5_DIR = path.join(OUT_DIR, settings.get('traitsHTML5Dir'));
+var TRAITS_NDK_DIR = path.join(OUT_DIR, settings.get('traitsNDKDir'));
 var APPS_INFO_DIR = path.join(OUT_DIR, settings.get('appsInfoDir'));
 
 var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
     return entry.match('\\.apk$');
 });
 
-[ZIPS_DIR, TRAITS_DIR].forEach(function(d) {
+[ZIPS_DIR, TRAITS_HTML5_DIR, TRAITS_NDK_DIR].forEach(function(d) {
     if(!fs.existsSync(d)) {
         fs.mkdirSync(d);
     }
@@ -32,35 +33,16 @@ nextStep();
 function scanNextFile() {
 
     var apkFile = apks[apkIndex];
-    var traitsFile = path.join(TRAITS_DIR, apkFile.replace(/-(\d+)\.apk$/, '.json'));
-
-    console.log('TRAITS FILE', traitsFile);
     
     apkIndex++;
 
-    if(!fs.existsSync(traitsFile)) {
-        
-        console.log('Scanning ' + Math.round(apkIndex/apks.length*100.0).toFixed(2) +'%');
-        console.log('Results will go to ' + traitsFile);
-
-        scanAPK(apkFile, function(resultTraits) {
-
-            fs.writeFileSync(traitsFile, JSON.stringify(resultTraits, null, 4));
-
-            nextStep();
-
-        });
-
-    } else {
-
-        console.log('Already have traits for ' + apkFile + ', so skipping');
-        nextStep();
-        
-    }
+    scanAPK(apkFile, nextStep);
 
 }
 
+
 function nextStep() {
+
     if(apkIndex < apks.length) {
         
         setImmediate(scanNextFile);
@@ -70,21 +52,23 @@ function nextStep() {
         findTotals();
 
     }
+
 }
+
 
 function findTotals() {
     console.log('TIME TO TOTAL!');
 
     var totals = [];
 
-    var traits = fs.readdirSync(TRAITS_DIR).filter(function(entry) {
+    var traits = fs.readdirSync(TRAITS_HTML5_DIR).filter(function(entry) {
         return entry.match('\\.json');
     });
 
     sequentialForEach(traits, function(traitFile, goOn) {
 
         var packageName = traitFile.replace('.json', '');
-        var traitPath = path.join(TRAITS_DIR, traitFile);
+        var traitPath = path.join(TRAITS_HTML5_DIR, traitFile);
         var infoPath = path.join(APPS_INFO_DIR, traitFile);
         var data = JSON.parse(fs.readFileSync(traitPath));
 
@@ -156,6 +140,9 @@ function findAppInfo(packageName, callback) {
 
 function scanAPK(apkFile, doneCallback) {
     
+    var traitsFile = apkFile.replace(/-(\d+)\.apk$/, '.json');
+    var traitsHTML5File = path.join(TRAITS_HTML5_DIR, traitsFile);
+    var traitsNDKFile = path.join(TRAITS_NDK_DIR, traitsFile);
     var cwd = process.cwd();   
     var apkFullPath = path.join(APKS_DIR, apkFile);
     var zipPath = path.join(ZIPS_DIR, apkFile + '.zip');
@@ -168,6 +155,14 @@ function scanAPK(apkFile, doneCallback) {
     var ddxBin = path.join(cwd, 'ddx1.26.jar');
     var commands = [];
 
+    // Do we need to continue?
+    if(fs.existsSync(traitsHTML5File) && fs.existsSync(traitsNDKFile)) {
+        console.log('all done with us');
+        doneCallback();
+        return;
+    }
+
+    // Well, apparently we need to continue
     if(!fs.existsSync(extractDir)) {
         commands.push('cp ' + apkFullPath + ' ' + zipPath);
         commands.push('unzip ' + zipPath + ' -d ' + extractDir);
@@ -206,7 +201,15 @@ function scanAPK(apkFile, doneCallback) {
 
     exec(cmd, function(error, stdout, stderr) {
         // We can now actually analyse the APK contents
-        detectHTML5Traits(extractDir, doneCallback);
+        detectHTML5Traits(extractDir, traitsHTML5File, function() {
+            // lib dir, classes dir
+            detectNDKTraits(
+                path.join(extractDir, 'lib'),
+                ddxDir,
+                traitsNDKFile,
+                doneCallback
+            );
+        });
     });
 
 }
@@ -248,8 +251,23 @@ function filterJSFrameworkiness(f) {
 }
 
 
-function detectHTML5Traits(apkDir, doneCallback) {
+function filterSOFiles(f) {
+    return f.match(/\.so$/i);
+}
+
+
+function filterJNIFiles(f) {
+    return f.match(/jni/i);
+}
+
+
+function detectHTML5Traits(apkDir, traitsFile, doneCallback) {
     console.log('Guessing html5-ness in', apkDir);
+
+    if(fs.existsSync(traitsFile)) {
+        doneCallback();
+        return;
+    }
 
     var apkFiles = recursiveDirList(apkDir);
     var traits = [];
@@ -321,15 +339,57 @@ function detectHTML5Traits(apkDir, doneCallback) {
             });
         }
         
-        doneCallback(traits);
+        writeJSON(traitsFile, traits);
+
+        doneCallback();
 
     });
 
 }
 
+
+function detectNDKTraits(libDir, classesDir, traitsFile, doneCallback) {
+    console.log('detect NDK', libDir, classesDir, traitsFile);
+    
+    var libFiles = recursiveDirList(libDir);
+    var classesFiles = recursiveDirList(classesDir);
+    var traits = [];
+
+    findTraits(traits, libFiles, filterSOFiles, 20, true, '.so compiled code found');
+    findTraits(traits, classesFiles, filterJNIFiles, 10, true, 'JNI classes found');
+
+    writeJSON(traitsFile, traits);
+
+    doneCallback();
+}
+
+
+function findTraits(traits, files, filter, amount, multiply, reason) {
+
+    var filteredFiles = files.filter(filter);
+    var finalAmount = multiply ? filteredFiles.length * amount : amount;
+    
+    traits.push({
+        amount: finalAmount,
+        reason: reason,
+        files: filteredFiles
+    });
+
+}
+
+
+function writeJSON(dstFile, data) {
+    fs.writeFileSync(dstFile, JSON.stringify(data, null, 4));
+}
+
 function recursiveDirList(dir) {
 
     var results = [];
+
+    if(!fs.existsSync(dir)) {
+        return results;
+    }
+
     var entries = fs.readdirSync(dir);
 
     entries.forEach(function(entry) {

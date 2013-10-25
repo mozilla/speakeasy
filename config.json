@@ -5,7 +5,8 @@
     "apksDir": "apks",
     "appsInfoDir": "appsInfo",
     "zipsDir": "zips",
-    "traitsDir": "traits",
+    "traitsHTML5Dir": "traitsHTML5",
+    "traitsNDKDir": "traitsNDK",
     "reportsDir": "reports",
     "numApps": 1000
 }

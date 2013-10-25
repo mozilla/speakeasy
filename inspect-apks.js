@@ -70,11 +70,11 @@ function findTotals() {
         var packageName = traitFile.replace('.json', '');
         var traitPath = path.join(TRAITS_HTML5_DIR, traitFile);
         var infoPath = path.join(APPS_INFO_DIR, traitFile);
-        var data = JSON.parse(fs.readFileSync(traitPath));
+        var data = readJSON(traitPath);
 
         console.log('INFO', infoPath);
 
-        if(!fs.existsSync(infoPath)) {
+        if(false && !fs.existsSync(infoPath)) { // TMP false
             findAppInfo(packageName, function() {
                 addEntry();
             });
@@ -92,7 +92,7 @@ function findTotals() {
             var info;
 
             try {
-                info = JSON.parse(fs.readFileSync(infoPath));
+                info = readJSON(infoPath);
                 appEntry.info = info;
             } catch(e) { }
 
@@ -380,6 +380,16 @@ function findTraits(traits, files, filter, amount, multiply, reason) {
 
 function writeJSON(dstFile, data) {
     fs.writeFileSync(dstFile, JSON.stringify(data, null, 4));
+}
+
+
+function readJSON(srcFile) {
+    try {
+        var data = JSON.parse(fs.readFileSync(srcFile));
+        return data;
+    } catch(e) {
+        return {};
+    }
 }
 
 function recursiveDirList(dir) {

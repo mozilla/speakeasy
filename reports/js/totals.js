@@ -126,7 +126,7 @@ function makeGlobalReport(tableId, data) {
     };
 
     data.forEach(function(app, appIndex) {
-        var traits = app.traits;
+        var traits = app.traits.html5.traits;
         traits.sort(makeSorter('amount'));
 
         // Title
@@ -229,7 +229,7 @@ function isHTML5(total) {
 
 
 function isAir(appInfo) {
-    var airTraits = appInfo.traits.filter(function(trait) {
+    var airTraits = appInfo.traits.html5.traits.filter(function(trait) {
         if(trait.reason === 'air') {
             return trait;
         }

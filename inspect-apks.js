@@ -68,9 +68,9 @@ function findTotals() {
     sequentialForEach(traits, function(traitFile, goOn) {
 
         var packageName = traitFile.replace('.json', '');
-        var traitPath = path.join(TRAITS_HTML5_DIR, traitFile);
+        var traitHTML5Path = path.join(TRAITS_HTML5_DIR, traitFile);
         var infoPath = path.join(APPS_INFO_DIR, traitFile);
-        var data = readJSON(traitPath);
+        var traitHTML5Data = readJSON(traitHTML5Path);
 
         console.log('INFO', infoPath);
 
@@ -86,27 +86,11 @@ function findTotals() {
 
             var appEntry = {
                 name: packageName,
-                traits: data
+                traits: {}
             };
 
-            var info;
-
-            try {
-                info = readJSON(infoPath);
-                appEntry.info = info;
-            } catch(e) { }
-
-            var total = 0;
-            console.log('###### ' + packageName + ' #######');
-            data.forEach(function(tr) {
-                console.log('+ ', tr.amount.toFixed(2), '\t', tr.reason);
-                total += tr.amount;
-            });
-
-            appEntry.total = total.toFixed(2);
-
-            console.log(total.toFixed(2) + ' TOTAL');
-            console.log('\n---\n');
+            appEntry.info = readJSON(infoPath);
+            appEntry.traits.html5 = aggregateTraits(traitHTML5Data);
 
             totals.push(appEntry);
 
@@ -121,9 +105,31 @@ function findTotals() {
         fs.writeFileSync(path.join(REPORTS_DIR, 'totals.json'), jsonString);
 
         exec('cp ' + OUT_DIR + '/categor*.json ' + REPORTS_DIR);
+
     });
 
 }
+
+
+function aggregateTraits(traits) {
+
+    var out = {};
+    var total = 0;
+
+    traits.forEach(function(tr) {
+        console.log('+ ', tr.amount.toFixed(2), '\t', tr.reason);
+        total += tr.amount;
+    });
+
+    total = total.toFixed(2);
+
+    out.total = total;
+    out.traits = traits;
+
+    return out;
+
+}
+
 
 function findAppInfo(packageName, callback) {
     var url = 'https://play.google.com/store/apps/details?id=' + packageName;

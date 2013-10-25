@@ -206,7 +206,7 @@ function scanAPK(apkFile, doneCallback) {
 
     exec(cmd, function(error, stdout, stderr) {
         // We can now actually analyse the APK contents
-        detectTraits(extractDir, doneCallback);
+        detectHTML5Traits(extractDir, doneCallback);
     });
 
 }
@@ -248,7 +248,7 @@ function filterJSFrameworkiness(f) {
 }
 
 
-function detectTraits(apkDir, doneCallback) {
+function detectHTML5Traits(apkDir, doneCallback) {
     console.log('Guessing html5-ness in', apkDir);
 
     var apkFiles = recursiveDirList(apkDir);

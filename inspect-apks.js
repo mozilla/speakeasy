@@ -75,7 +75,7 @@ function findTotals() {
 
         console.log('INFO', infoPath);
 
-        if(false && !fs.existsSync(infoPath)) { // TMP false
+        if(!fs.existsSync(infoPath)) {
             findAppInfo(packageName, function() {
                 addEntry();
             });

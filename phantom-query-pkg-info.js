@@ -56,12 +56,14 @@ if(!fs.exists(outFilePath)) {
             var developer = document.querySelector('a[itemprop=name]').innerText.trim();
             var rating = document.querySelector('.current-rating').style.width.replace('%', '') + 0;
             var numRatings = document.querySelector('.stars-count').innerText.replace(/[^\d]/g, '');
+            var numDownloadsRange = document.querySelector('div[itemprop=numDownloads]').innerText.trim();
 
             var data = {
                 title: title,
-            developer: developer,
-            rating: rating,
-            numRatings: numRatings
+                developer: developer,
+                rating: rating,
+                numRatings: numRatings,
+                numDownloadsRange: numDownloadsRange
             };
 
             return data;

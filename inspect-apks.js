@@ -11,13 +11,14 @@ var APKS_DIR = path.join(OUT_DIR, settings.get('apksDir'));
 var ZIPS_DIR = path.join(OUT_DIR, settings.get('zipsDir'));
 var TRAITS_HTML5_DIR = path.join(OUT_DIR, settings.get('traitsHTML5Dir'));
 var TRAITS_NDK_DIR = path.join(OUT_DIR, settings.get('traitsNDKDir'));
+var PERMISSIONS_DIR = path.join(OUT_DIR, settings.get('permissionsDir'));
 var APPS_INFO_DIR = path.join(OUT_DIR, settings.get('appsInfoDir'));
 
 var apks = fs.readdirSync(APKS_DIR).filter(function(entry) {
     return entry.match('\\.apk$');
 });
 
-[ZIPS_DIR, TRAITS_HTML5_DIR, TRAITS_NDK_DIR].forEach(function(d) {
+[ZIPS_DIR, TRAITS_HTML5_DIR, TRAITS_NDK_DIR, PERMISSIONS_DIR].forEach(function(d) {
     if(!fs.existsSync(d)) {
         fs.mkdirSync(d);
     }
@@ -151,7 +152,8 @@ function scanAPK(apkFile, doneCallback) {
     var traitsFile = apkFile.replace(/-(\d+)\.apk$/, '.json');
     var traitsHTML5File = path.join(TRAITS_HTML5_DIR, traitsFile);
     var traitsNDKFile = path.join(TRAITS_NDK_DIR, traitsFile);
-    var cwd = process.cwd();   
+    var permissionsFile = path.join(PERMISSIONS_DIR, traitsFile);
+    var cwd = process.cwd();
     var apkFullPath = path.join(APKS_DIR, apkFile);
     var zipPath = path.join(ZIPS_DIR, apkFile + '.zip');
     var extractDir = path.join(ZIPS_DIR, apkFile.replace('.apk', ''));
@@ -164,7 +166,7 @@ function scanAPK(apkFile, doneCallback) {
     var commands = [];
 
     // Do we need to continue?
-    if(fs.existsSync(traitsHTML5File) && fs.existsSync(traitsNDKFile)) {
+    if(fs.existsSync(traitsHTML5File) && fs.existsSync(traitsNDKFile) && fs.existsSync(permissionsFile)) {
         console.log('all done with us');
         doneCallback();
         return;
@@ -215,7 +217,13 @@ function scanAPK(apkFile, doneCallback) {
                 path.join(extractDir, 'lib'),
                 ddxDir,
                 traitsNDKFile,
-                doneCallback
+                function() {
+                    detectPermissions(
+                        apkFullPath,
+                        permissionsFile,
+                        doneCallback
+                    );
+                }
             );
         });
     });
@@ -369,6 +377,37 @@ function detectNDKTraits(libDir, classesDir, traitsFile, doneCallback) {
     writeJSON(traitsFile, traits);
 
     doneCallback();
+}
+
+
+function detectPermissions(apkFile, permissionsFile, doneCallback) {
+
+    console.log('detect permissions', apkFile);
+
+    if(fs.existsSync(permissionsFile)) {
+        doneCallback();
+        return;
+    }
+    
+    exec('aapt dump permissions ' + apkFile, function(error, stdout, stderr) {
+
+        var lines = stdout.split('\n');
+        var permissions = [];
+
+        lines.forEach(function(line) {
+            var parts = line.split(': ');
+
+            if(parts[0] === 'uses-permission') {
+                permissions.push(parts[1]);
+            }
+        });
+
+        writeJSON(permissionsFile, permissions);
+
+        doneCallback();
+        
+    });
+
 }
 
 

@@ -97,8 +97,10 @@ function onAllDataLoaded() {
     onDataLoaded(globalData.totals);
     makeCategorisedReport(globalData);
     makeMostPopularReport(globalData);
+    makePermissionsReport(globalData.totals);
     
 }
+
 
 function onDataLoaded(data) {
 
@@ -201,6 +203,26 @@ function makeGlobalReport(tableId, data) {
 
 }
 
+
+function makePermissionsReport(data) {
+    var permissions = {};
+
+    data.forEach(function(app) {
+        if(app.permissions) {
+            app.permissions.forEach(function(perm) {
+                if(permissions[perm]) {
+                    permissions[perm]++;
+                } else {
+                    permissions[perm] = 1;
+                }
+            });
+        }
+    });
+
+    console.log(permissions);
+}
+
+
 function findApp(array, pkgName) {
     for(var i = 0; i < array.length; i++) {
         var app = array[i];
@@ -211,6 +233,7 @@ function findApp(array, pkgName) {
     
     return null;
 }
+
 
 function isHTML5(total) {
 
@@ -249,6 +272,9 @@ function makeAirReport(containerId, data) {
     container.appendChild(list);
 
     airApps.sort(function(a, b) {
+        if(!(a.info && a.info.title) || !(b.info && b.info.title)) {
+            return 0;
+        }
         return a.info.title.toLowerCase() > b.info.title.toLowerCase();
     });
 
@@ -453,13 +479,8 @@ function makeSorter(propertyName) {
     return function(a, b) {
         var propA = Number(a[propertyName]);
         var propB = Number(b[propertyName]);
-        var epsilon = propA - propB;
-
-        if(Math.abs(epsilon) < 0.0001) {
-            return 0;
-        } else {
-            return epsilon > 0 ? -1 : 1;
-        }
+        
+        return propA - propB;
     };
 }
 

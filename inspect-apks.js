@@ -73,6 +73,7 @@ function findTotals() {
         var infoPath = path.join(APPS_INFO_DIR, traitFile);
         var traitHTML5Data = readJSON(traitHTML5Path);
         var traitNDKData = readJSON(path.join(TRAITS_NDK_DIR, traitFile));
+        var permissionsData = readJSON(path.join(PERMISSIONS_DIR, traitFile));
 
         console.log('INFO', infoPath);
 
@@ -94,6 +95,7 @@ function findTotals() {
             appEntry.info = readJSON(infoPath);
             appEntry.traits.html5 = aggregateTraits(traitHTML5Data);
             appEntry.traits.ndk = aggregateTraits(traitNDKData);
+            appEntry.permissions = permissionsData;
 
             totals.push(appEntry);
 

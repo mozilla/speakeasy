@@ -329,6 +329,7 @@ function makeAirReport(containerId, data) {
 
 
 function getPopularApps(data) {
+
     var apps = [];
     var popular = data.mostPopular;
     var totalApps = data.totals;

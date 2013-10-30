@@ -97,7 +97,7 @@ function onAllDataLoaded() {
     onDataLoaded(globalData.totals);
     makeCategorisedReport(globalData);
     makeMostPopularReport(globalData);
-    makePermissionsReport(globalData);
+    makePermissionsReport(globalData.totals);
     
 }
 
@@ -205,7 +205,21 @@ function makeGlobalReport(tableId, data) {
 
 
 function makePermissionsReport(data) {
-    
+    var permissions = {};
+
+    data.forEach(function(app) {
+        if(app.permissions) {
+            app.permissions.forEach(function(perm) {
+                if(permissions[perm]) {
+                    permissions[perm]++;
+                } else {
+                    permissions[perm] = 1;
+                }
+            });
+        }
+    });
+
+    console.log(permissions);
 }
 
 
@@ -258,6 +272,9 @@ function makeAirReport(containerId, data) {
     container.appendChild(list);
 
     airApps.sort(function(a, b) {
+        if(!(a.info && a.info.title) || !(b.info && b.info.title)) {
+            return 0;
+        }
         return a.info.title.toLowerCase() > b.info.title.toLowerCase();
     });
 

@@ -116,7 +116,7 @@ function onDataLoaded(data) {
 function makeGlobalReport(tableId, data) {
 
     data.sort(function(a, b) {
-        return b.traits.html5.total - a.traits.html5.total;
+        return getAppHTML5Score(b) - getAppHTML5Score(a);
     });
 
     var div = document.getElementById(tableId);
@@ -144,7 +144,7 @@ function makeGlobalReport(tableId, data) {
         var title = app.info !== undefined ? app.info.title : app.name;
 
         var tdTotal = trTitle.insertCell(-1);
-        tdTotal.innerHTML = app.traits.html5.total;
+        tdTotal.innerHTML = getAppHTML5Score(app);
 
         var tdName = trTitle.insertCell(-1);
         tdName.innerHTML = '<h3><a href="#show-more">' + title + '</a></h3>';
@@ -182,7 +182,7 @@ function makeGlobalReport(tableId, data) {
         tdDetails.appendChild(traitsTable);
 
 
-        var total = app.traits.html5.total;
+        var total = getAppHTML5Score(app);
         
         var className = isHTML5(total);
 
@@ -262,9 +262,16 @@ function isAir(appInfo) {
     return airTraits.length > 0;
 }
 
+
 function getAppTitle(app) {
     return(app.info && app.info.title ? app.info.title : app.name);
 }
+
+
+function getAppHTML5Score(app) {
+    return app.traits.html5.total;
+}
+
 
 function makeAirReport(containerId, data) {
     var airApps = data.filter(isAir);
@@ -323,7 +330,7 @@ function makeMostPopularReport(data) {
             tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + appTitle + '</a>';
 
             var tdHTML5ness = tr.insertCell(-1);
-            var html5ness = isHTML5(app.traits.html5.total);
+            var html5ness = isHTML5(getAppHTML5Score(app));
             tdHTML5ness.innerHTML = html5ness;
 
             if(aggregate[html5ness] === undefined) {
@@ -356,6 +363,7 @@ function makeMostPopularReport(data) {
 
 }
 
+
 function makeCategorisedReport(data) {
 
     var categories = data.categories;
@@ -385,7 +393,7 @@ function makeCategorisedReport(data) {
         // Count how many apps fall in each 'html5 likeability' group
         appsInCategory.forEach(function(app) {
 
-            var total = app.total;
+            var total = getAppHTML5Score(app);
             var html5ness = isHTML5(total);
 
             if(groups[html5ness] === undefined) {

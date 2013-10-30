@@ -207,7 +207,12 @@ function makeGlobalReport(tableId, data) {
 
 
 function makePermissionsReport(data) {
+
+    var outElement = document.getElementById('permissions');
+    var table = document.createElement('table');
     var permissions = {};
+
+    outElement.appendChild(table);
 
     data.forEach(function(app) {
         if(app.permissions) {
@@ -221,7 +226,22 @@ function makePermissionsReport(data) {
         }
     });
 
-    console.log(permissions);
+    var permissionsArray = [];
+
+    for(var k in permissions) {
+        permissionsArray.push({ permission: k, count: permissions[k] });
+    }
+
+    permissionsArray.sort(makeSorter('count'));
+    permissionsArray.reverse();
+
+    permissionsArray.forEach(function(perm, index) {
+        var tr = table.insertRow(-1);
+        tr.insertCell(-1).innerHTML = (index + 1);
+        tr.insertCell(-1).innerHTML = perm.permission;
+        tr.insertCell(-1).innerHTML = perm.count;
+    });
+
 }
 
 

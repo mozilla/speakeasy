@@ -115,7 +115,9 @@ function onDataLoaded(data) {
 
 function makeGlobalReport(tableId, data) {
 
-    data.sort(makeSorter('total'));
+    data.sort(function(a, b) {
+        return b.traits.html5.total - a.traits.html5.total;
+    });
 
     var div = document.getElementById(tableId);
     var out = document.createElement('table');
@@ -126,7 +128,7 @@ function makeGlobalReport(tableId, data) {
         unlikely: 0,
         no: 0
     };
-
+    
     data.forEach(function(app, appIndex) {
         var traits = app.traits.html5.traits;
         traits.sort(makeSorter('amount'));
@@ -142,7 +144,7 @@ function makeGlobalReport(tableId, data) {
         var title = app.info !== undefined ? app.info.title : app.name;
 
         var tdTotal = trTitle.insertCell(-1);
-        tdTotal.innerHTML = app.total;
+        tdTotal.innerHTML = app.traits.html5.total;
 
         var tdName = trTitle.insertCell(-1);
         tdName.innerHTML = '<h3><a href="#show-more">' + title + '</a></h3>';
@@ -180,7 +182,7 @@ function makeGlobalReport(tableId, data) {
         tdDetails.appendChild(traitsTable);
 
 
-        var total = app.total;
+        var total = app.traits.html5.total;
         
         var className = isHTML5(total);
 

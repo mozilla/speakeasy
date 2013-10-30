@@ -97,7 +97,8 @@ function onAllDataLoaded() {
     onDataLoaded(globalData.totals);
     makeCategorisedReport(globalData);
     makeMostPopularReport(globalData);
-    makePermissionsReport(globalData.totals);
+    makePermissionsReport(globalData.totals, 'permissions');
+    makePermissionsPopularReport(globalData, 'permissions_popular');
     
 }
 
@@ -206,9 +207,9 @@ function makeGlobalReport(tableId, data) {
 }
 
 
-function makePermissionsReport(data) {
+function makePermissionsReport(data, outId) {
 
-    var outElement = document.getElementById('permissions');
+    var outElement = document.getElementById(outId);
     var table = document.createElement('table');
     var permissions = {};
 
@@ -242,6 +243,12 @@ function makePermissionsReport(data) {
         tr.insertCell(-1).innerHTML = perm.count;
     });
 
+}
+
+function makePermissionsPopularReport(data, outId) {
+    var popularApps = getPopularApps(data);
+    console.log(popularApps.length);
+    console.log(popularApps);
 }
 
 
@@ -320,12 +327,32 @@ function makeAirReport(containerId, data) {
     });
 }
 
+
+function getPopularApps(data) {
+    var apps = [];
+    var popular = data.mostPopular;
+    var totalApps = data.totals;
+
+    popular.forEach(function(appUrl) {
+        var pkgName = getAppPackageName(appUrl);
+        var app = findApp(totalApps, pkgName);
+
+        if(app !== null) {
+            apps.push(app);
+        }
+    });
+
+    return apps;
+
+}
+
+
 function makeMostPopularReport(data) {
 
     var outElement = document.getElementById('popular');
     var overview = document.createElement('div');
     var table = document.createElement('table');
-    var popular = data.mostPopular;
+    var popular = getPopularApps(data); // data.mostPopular;
     var numPopularApps = popular.length;
     var totalApps = data.totals;
     var aggregate = {};
@@ -337,37 +364,34 @@ function makeMostPopularReport(data) {
     var trHead = table.insertRow(-1);
     trHead.innerHTML = '<td></td><td>html5?</td><td>air?</td>';
     
-    popular.forEach(function(appUrl) {
+    popular.forEach(function(app) {
 
-        var pkgName = getAppPackageName(appUrl);
-        var app = findApp(totalApps, pkgName);
+        var tr = table.insertRow(-1);
 
-        if(app !== null) {
-            var tr = table.insertRow(-1);
+        var tdTitle = tr.insertCell(-1);
+        var appTitle = getAppTitle(app);
+        var appURL = getAppURL(app.name);
 
-            var tdTitle = tr.insertCell(-1);
-            var appTitle = app.info !== undefined ? app.info.title : pkgName;
-            tdTitle.innerHTML = '<a href="' + appUrl + '" rel="noreferrer">' + appTitle + '</a>';
+        tdTitle.innerHTML = '<a href="' + appURL + '" rel="noreferrer">' + appTitle + '</a>';
 
-            var tdHTML5ness = tr.insertCell(-1);
-            var html5ness = isHTML5(getAppHTML5Score(app));
-            tdHTML5ness.innerHTML = html5ness;
+        var tdHTML5ness = tr.insertCell(-1);
+        var html5ness = isHTML5(getAppHTML5Score(app));
+        tdHTML5ness.innerHTML = html5ness;
 
-            if(aggregate[html5ness] === undefined) {
-                aggregate[html5ness] = 1;
-            } else {
-                aggregate[html5ness]++;
-            }
-
-            var airness = tr.insertCell(-1);
-            var air = isAir(app);
-            airness.innerHTML = air ? 'yes' : '';
-            
-            if(air) {
-                airAmount++;
-            }
-
+        if(aggregate[html5ness] === undefined) {
+            aggregate[html5ness] = 1;
+        } else {
+            aggregate[html5ness]++;
         }
+
+        var airness = tr.insertCell(-1);
+        var air = isAir(app);
+        airness.innerHTML = air ? 'yes' : '';
+        
+        if(air) {
+            airAmount++;
+        }
+
 
     });
 

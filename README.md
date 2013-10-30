@@ -24,8 +24,10 @@ so that the node.js dependencies are installed.
 There are additional external dependencies that have to be installed manually:
 
 * Java SDK to run Java tools
-* `dex2jar` https://code.google.com/p/dex2jar/ - download and add its directory to your $PATH
-* `dedexer` http://dedexer.sourceforge.net/ - download and place ddx1.26.jar in the root of this project
+* `dex2jar` https://code.google.com/p/dex2jar/ - download and add its directory to your ```$PATH```
+* `dedexer` http://dedexer.sourceforge.net/ - download and place ```ddx1.26.jar``` in the root of this project
+
+Also make sure the directory containing ```aapt``` is added to your ```$PATH```.
 
 ## Running
 

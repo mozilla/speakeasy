@@ -262,6 +262,10 @@ function isAir(appInfo) {
     return airTraits.length > 0;
 }
 
+function getAppTitle(app) {
+    return(app.info && app.info.title ? app.info.title : app.name);
+}
+
 function makeAirReport(containerId, data) {
     var airApps = data.filter(isAir);
 
@@ -274,15 +278,17 @@ function makeAirReport(containerId, data) {
     container.appendChild(list);
 
     airApps.sort(function(a, b) {
-        if(!(a.info && a.info.title) || !(b.info && b.info.title)) {
-            return 0;
-        }
-        return a.info.title.toLowerCase() > b.info.title.toLowerCase();
+
+        var titleA = getAppTitle(a);
+        var titleB = getAppTitle(b);
+
+        return titleA.toLowerCase() > titleB.toLowerCase();
+
     });
 
     airApps.forEach(function(app) {
         var li = document.createElement('li'); 
-        li.innerHTML = app.info.title + ' (<a href="' + getAppURL(app.name) + '">play store</a>)';
+        li.innerHTML = getAppTitle(app) + ' (<a href="' + getAppURL(app.name) + '">play store</a>)';
         list.appendChild(li);
     });
 }

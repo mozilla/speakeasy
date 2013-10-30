@@ -97,8 +97,10 @@ function onAllDataLoaded() {
     onDataLoaded(globalData.totals);
     makeCategorisedReport(globalData);
     makeMostPopularReport(globalData);
+    makePermissionsReport(globalData);
     
 }
+
 
 function onDataLoaded(data) {
 
@@ -201,6 +203,12 @@ function makeGlobalReport(tableId, data) {
 
 }
 
+
+function makePermissionsReport(data) {
+    
+}
+
+
 function findApp(array, pkgName) {
     for(var i = 0; i < array.length; i++) {
         var app = array[i];
@@ -211,6 +219,7 @@ function findApp(array, pkgName) {
     
     return null;
 }
+
 
 function isHTML5(total) {
 
@@ -453,13 +462,8 @@ function makeSorter(propertyName) {
     return function(a, b) {
         var propA = Number(a[propertyName]);
         var propB = Number(b[propertyName]);
-        var epsilon = propA - propB;
-
-        if(Math.abs(epsilon) < 0.0001) {
-            return 0;
-        } else {
-            return epsilon > 0 ? -1 : 1;
-        }
+        
+        return propA - propB;
     };
 }
 

@@ -212,11 +212,16 @@ function makePermissionsReport(data, outId) {
     var outElement = document.getElementById(outId);
     var table = document.createElement('table');
     var permissions = {};
+    var numApps = data.length;
+
+    var internetPermissions = 0;
+    var noPermissions = 0;
 
     outElement.appendChild(table);
 
     data.forEach(function(app) {
         if(app.permissions) {
+        
             app.permissions.forEach(function(perm) {
                 
                 var permName = perm.split('.').pop();
@@ -227,9 +232,18 @@ function makePermissionsReport(data, outId) {
                     permissions[permName] = 1;
                 }
 
+                if(permName === 'INTERNET') {
+                    console.log('more internet', perm, internetPermissions);
+                    internetPermissions++;
+                }
+
             });
+        } else {
+            noPermissions++;
         }
     });
+
+    console.log('for', numApps, internetPermissions, 'missing', noPermissions);
 
     var permissionsArray = [];
 
@@ -245,6 +259,7 @@ function makePermissionsReport(data, outId) {
         tr.insertCell(-1).innerHTML = (index + 1);
         tr.insertCell(-1).innerHTML = perm.permission;
         tr.insertCell(-1).innerHTML = perm.count;
+        tr.insertCell(-1).innerHTML = percentage(Math.min(1.0, perm.count / numApps));
     });
 
 }
@@ -307,14 +322,18 @@ function getAppHTML5Score(app) {
     return app.traits.html5.total;
 }
 
+// Converts a decimal value into xy.zz% output
+function percentage(value) {
+    return ((Math.round(value * 10000.0) / 100).toFixed(2)) + '%';
+}
+
 
 function makeAirReport(containerId, data) {
     var airApps = data.filter(isAir);
 
     var container = document.getElementById(containerId);
-    var percentage = (airApps.length * 100.0 / data.length).toFixed(2);
 
-    container.innerHTML = '<p><strong>' + percentage + '%</strong> of ' + data.length + ' apps</p>';
+    container.innerHTML = '<p><strong>' + percentage(airApps.length / data.length) + '</strong> of ' + data.length + ' apps</p>';
 
     var list = document.createElement('ol');
     container.appendChild(list);
@@ -408,7 +427,7 @@ function makeMostPopularReport(data) {
 
     for(var k in aggregate) {
         var value = aggregate[k];
-        txtOverview += '<p>' + k + ' ' + (Math.round(value * 10000 / numPopularApps) / 100 ) + '% (' + value + ')</p>';
+        txtOverview += '<p>' + k + ' ' + percentage(value / numPopularApps) + ' (' + value + ')</p>';
     }
 
     overview.innerHTML = txtOverview + '<br /><p>air: ' + airAmount + '</p>';
@@ -477,8 +496,8 @@ function makeCategorisedReport(data) {
         appendPieChart('#' + div.id, groups);
 
         var numYes = groups.yes !== undefined ? groups.yes : 0;
-        var yesPerc = Math.round(numYes * 10000.0 / appsInCategory.length) / 100;
-        var airPerc = Math.round(airness * 10000.0 / appsInCategory.length) / 100;
+        var yesPerc = percentage(numYes / appsInCategory.length);
+        var airPerc = percentage(airness / appsInCategory.length);
 
         results.push({ name: catName, groups: groups, yesPerc: yesPerc, air: airness, airPerc: airPerc, count: appsInCategory.length, yesPackages: yesApps.map(function(app) {
             return app.name;
@@ -522,11 +541,11 @@ function makeCategorisedReport(data) {
             cell.innerHTML = value;
         });
 
-        row.insertCell(-1).innerHTML = r.yesPerc + '%';
+        row.insertCell(-1).innerHTML = r.yesPerc;
         row.insertCell(-1).innerHTML = r.count;
 
         row.insertCell(-1).innerHTML = r.air;
-        row.insertCell(-1).innerHTML = r.airPerc + '%';
+        row.insertCell(-1).innerHTML = r.airPerc;
 
         row.insertCell(-1).innerHTML = r.name;
 
@@ -617,7 +636,7 @@ function appendPieChart(selector, values) {
                 return 'end';
             }
         })
-        .text(function(d, i) { return (Math.round(data[i].value * 10000.0 / totals)/100) + '% ' + data[i].label; });
+        .text(function(d, i) { return percentage(data[i].value / totals) + data[i].label; });
 
 
     function angle(d) {

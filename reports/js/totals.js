@@ -99,6 +99,7 @@ function onAllDataLoaded() {
     makeMostPopularReport(globalData);
     makePermissionsReport(globalData.totals, 'permissions');
     makePermissionsPopularReport(globalData, 'permissions_popular');
+    makePermissionsCordovaReport(globalData, 'permissions_cordova');
     
 }
 
@@ -266,6 +267,18 @@ function makePermissionsPopularReport(data, outId) {
 }
 
 
+function makePermissionsCordovaReport(data, outId) {
+    
+    var apps = data.totals.filter(function(app) {
+        if(getAppIsPhonegap(app)) {
+            return true;
+        }
+    });
+
+    makePermissionsReport(apps, outId);
+}
+
+
 function dedupArray(array) {
     var out = [];
     array.forEach(function(el) {
@@ -325,6 +338,18 @@ function getAppTitle(app) {
 function getAppHTML5Score(app) {
     return app.traits.html5.total;
 }
+
+
+function getAppIsPhonegap(app) {
+    var itIs = false;
+    app.traits.html5.traits.forEach(function(trait) {
+        if(trait.reason.match(/Phonegap/i)) {
+            itIs = true;
+        }
+    });
+    return itIs;
+}
+
 
 // Converts a decimal value into xy.zz% output
 function percentage(value) {
@@ -649,3 +674,5 @@ function appendPieChart(selector, values) {
     }
 
 }
+
+

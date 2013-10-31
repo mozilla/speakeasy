@@ -215,14 +215,16 @@ function makePermissionsReport(data, outId) {
     var numApps = data.length;
 
     var internetPermissions = 0;
-    var noPermissions = 0;
 
     outElement.appendChild(table);
 
     data.forEach(function(app) {
+
         if(app.permissions) {
+
+            var dedupedPermissions = dedupArray(app.permissions);
         
-            app.permissions.forEach(function(perm) {
+            dedupedPermissions.forEach(function(perm) {
                 
                 var permName = perm.split('.').pop();
 
@@ -232,18 +234,9 @@ function makePermissionsReport(data, outId) {
                     permissions[permName] = 1;
                 }
 
-                if(permName === 'INTERNET') {
-                    console.log('more internet', perm, internetPermissions);
-                    internetPermissions++;
-                }
-
             });
-        } else {
-            noPermissions++;
         }
     });
-
-    console.log('for', numApps, internetPermissions, 'missing', noPermissions);
 
     var permissionsArray = [];
 
@@ -270,6 +263,17 @@ function makePermissionsPopularReport(data, outId) {
 
     makePermissionsReport(popularApps, outId);
 
+}
+
+
+function dedupArray(array) {
+    var out = [];
+    array.forEach(function(el) {
+        if(out.indexOf(el) === -1) {
+            out.push(el);
+        }
+    });
+    return out;
 }
 
 

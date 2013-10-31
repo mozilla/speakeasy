@@ -218,11 +218,15 @@ function makePermissionsReport(data, outId) {
     data.forEach(function(app) {
         if(app.permissions) {
             app.permissions.forEach(function(perm) {
-                if(permissions[perm]) {
-                    permissions[perm]++;
+                
+                var permName = perm.split('.').pop();
+
+                if(permissions[permName]) {
+                    permissions[permName]++;
                 } else {
-                    permissions[perm] = 1;
+                    permissions[permName] = 1;
                 }
+
             });
         }
     });
@@ -250,9 +254,6 @@ function makePermissionsPopularReport(data, outId) {
     var popularApps = getPopularApps(data);
 
     makePermissionsReport(popularApps, outId);
-
-    console.log(popularApps.length);
-    console.log(popularApps);
 
 }
 

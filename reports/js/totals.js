@@ -246,13 +246,19 @@ function makePermissionsReport(data, outId) {
 }
 
 function makePermissionsPopularReport(data, outId) {
+    
     var popularApps = getPopularApps(data);
+
+    makePermissionsReport(popularApps, outId);
+
     console.log(popularApps.length);
     console.log(popularApps);
+
 }
 
 
 function findApp(array, pkgName) {
+
     for(var i = 0; i < array.length; i++) {
         var app = array[i];
         if(app.name === pkgName) {
@@ -261,6 +267,7 @@ function findApp(array, pkgName) {
     }
     
     return null;
+
 }
 
 

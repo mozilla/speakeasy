@@ -1,0 +1,449 @@
+[
+    {
+        "apiName": "Alarm",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Alarm",
+        "appType": "hosted",
+        "name": "alarms",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "CAPTURE_AUDIO_OUTPUT",
+        "apiName": "GetUserMedia",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/Navigator.getUserMedia",
+        "appType": "hosted",
+        "name": "audio-capture",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "privileged",
+        "name": "audio-channel-alarm",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "MEDIA_CONTENT_CONTROL",
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "hosted",
+        "name": "audio-channel-content",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "MODIFY_AUDIO_SETTINGS",
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "hosted",
+        "name": "audio-channel-normal",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "privileged",
+        "name": "audio-channel-notification",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Browser",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Browser",
+        "appType": "privileged",
+        "name": "browser",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "READ_CONTACTS",
+        "apiName": "Contacts",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Contacts",
+        "appType": "privileged",
+        "name": "contacts",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "mozNotification",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/window.navigator.mozNotification",
+        "appType": "hosted",
+        "name": "desktop-notification",
+        "platforms": [
+            "FxOS",
+            "Android",
+            "Desktop"
+        ]
+    },
+    {
+        "apiName": "Device Storage",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
+        "appType": "privileged",
+        "name": "device-storage:music",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Device Storage",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
+        "appType": "privileged",
+        "name": "device-storage:pictures",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "READ_EXTERNAL_STORAGE",
+        "apiName": "Device Storage",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
+        "appType": "privileged",
+        "name": "device-storage:sdcard",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Device Storage",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
+        "appType": "privileged",
+        "name": "device-storage:videos",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "FM Radio",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/WebFM",
+        "appType": "hosted",
+        "name": "fmradio",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "ACCESS_COARSE_LOCATION",
+        "apiName": "Geolocation",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation",
+        "appType": "hosted",
+        "name": "geolocation",
+        "platforms": [
+            "FxOS",
+            "Desktop",
+            "Android"
+        ]
+    },
+    {
+        "apiName": "Keyboard",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/KeboardIME",
+        "appType": "privileged",
+        "name": "keyboard",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Mobile Network",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/MozMobileNetworkInfo",
+        "appType": "privileged",
+        "name": "mobilenetwork",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Simple Push",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Simple_Push",
+        "appType": "hosted",
+        "name": "push",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Storage",
+        "apiURL": "",
+        "appType": "hosted",
+        "name": "storage",
+        "platforms": [
+            "FxOS",
+            "Desktop"
+        ]
+    },
+    {
+        "apiName": "SystemXHR",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest#Non-standard_properties",
+        "appType": "privileged",
+        "name": "systemXHR",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "TCP Socket",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/TCPSocket",
+        "appType": "privileged",
+        "name": "tcp-socket",
+        "platforms": [
+            "FxOS",
+            "Desktop"
+        ]
+    },
+    {
+        "apiName": "Attention Screen",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "attention",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "certified",
+        "name": "audio-channel-ringer",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "PROCESS_OUTGOING_CALLS",
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "certified",
+        "name": "audio-channel-telephony",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Audio Policy",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
+        "appType": "certified",
+        "name": "audio-channel-publicnotification",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Background Sensor",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "background-sensors",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Background Services",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "backgroundservice",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "BLUETOOTH",
+        "apiName": "&nbsp;",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "bluetooth",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "CAPTURE_VIDEO_OUTPUT",
+        "apiName": "Camera",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/window.navigator.mozCameras",
+        "appType": "certified",
+        "name": "camera",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "&nbsp;",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "cellbroadcast",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Device Storage",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
+        "appType": "certified",
+        "name": "device-storage:apps",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Embed Apps",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "embed-apps",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Idle",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Idle",
+        "appType": "certified",
+        "name": "idle",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Mobile Connection",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Mobile_Connection",
+        "appType": "certified",
+        "name": "mobileconnection",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Network Events",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "network-events",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Network Stats Manage",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "networkstats-manage",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Open out-of-process windows",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "open-remote-window",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "Permissions",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "permissions",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "WAKE_LOCK",
+        "apiName": "Power Management",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Power_Management",
+        "appType": "certified",
+        "name": "power",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "CHANGE_CONFIGURATION",
+        "apiName": "Settings",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Settings",
+        "appType": "certified",
+        "name": "settings",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "RECEIVE_SMS",
+        "apiName": "WebSMS",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/WebSMS",
+        "appType": "certified",
+        "name": "sms",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "CALL_PHONE",
+        "apiName": "WebTelephony",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/Web/Guide/Telephony",
+        "appType": "certified",
+        "name": "telephony",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "TimeManager",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Time_and_Clock",
+        "appType": "certified",
+        "name": "time",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "ADD_VOICEMAIL",
+        "apiName": "Voicemail",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "voicemail",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "android": "INSTALL_PACKAGES",
+        "apiName": "Open Webapps",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "webapps-manage",
+        "platforms": [
+            "FxOS",
+            "Desktop",
+            "Android"
+        ]
+    },
+    {
+        "android": "ACCESS_NETWORK_STATE",
+        "apiName": "WiFi Management",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "wifi-manage",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
+        "apiName": "WAP Push",
+        "apiURL": "",
+        "appType": "certified",
+        "name": "wappush",
+        "platforms": [
+            "FxOS"
+        ]
+    }
+]

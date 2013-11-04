@@ -7,7 +7,8 @@ window.onload = function() {
     loadJSONFiles([
         [ 'appsURLs.json', onMostPopularLoaded ],
         [ 'totals.json', onTotalsLoaded ],
-        [ 'categories.json', onCategoriesLoaded ]
+        [ 'categories.json', onCategoriesLoaded ],
+        [ 'permissions.json', onPermissionsLoaded ]
     ]);
 };
 
@@ -51,10 +52,12 @@ function loadJSONFiles(filesList, doneCallback) {
 
 }
 
+
 function onMostPopularLoaded(data) {
     console.log('most popular loaded', data.length);
     globalData.mostPopular = data;
 }
+
 
 function onTotalsLoaded(data) {
     console.log('totals loaded', data.length);
@@ -86,11 +89,19 @@ function onCategoryLoaded(categoryName, data) {
     });
 }
 
+
+function onPermissionsLoaded(data) {
+    console.log('permissions loaded', data.length);
+    globalData.permissions = data;
+}
+
+
 function* iterator(arr) {
     for(var i = 0; i < arr.length; i++) {
         yield arr[i];
     }
 }
+
 
 function onAllDataLoaded() {
 

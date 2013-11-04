@@ -2,6 +2,9 @@
 *.jar
 captures
 node_modules
+reports/appsURLs.json
+reports/categories.json
+reports/category*.json
 reports/totals.json
 
 google_account.json

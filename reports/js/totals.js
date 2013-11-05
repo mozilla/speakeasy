@@ -254,7 +254,8 @@ function makePermissionsReport(data, outId) {
     var permissionsArray = [];
 
     for(var k in permissions) {
-        permissionsArray.push({ permission: k, count: permissions[k] });
+        var androidPerm = findWebAPIPermissionByAndroidName(k);
+        permissionsArray.push({ permission: k, count: permissions[k], inWebAPI: androidPerm !== null });
     }
 
     permissionsArray.sort(makeSorter('count'));
@@ -266,6 +267,7 @@ function makePermissionsReport(data, outId) {
         tr.insertCell(-1).innerHTML = perm.permission;
         tr.insertCell(-1).innerHTML = perm.count;
         tr.insertCell(-1).innerHTML = percentage(Math.min(1.0, perm.count / numApps));
+        tr.insertCell(-1).innerHTML = perm.inWebAPI ? 'Web API available' : '';
     });
 
 }

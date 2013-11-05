@@ -430,11 +430,13 @@ function findWebAPIPermissionByAndroidName(name) {
 
 
 function renderPermissionsList(app) {
-    var uniquePermissions = uniqueArray(app.permissions);
-    var permList = uniquePermissions.map(function(p) {
-        var shorterName = p.split('.').pop();
-        var webAPIPermission = findWebAPIPermissionByAndroidName(shorterName);
-        return { name: shorterName, webAPI: webAPIPermission };
+    var shorterPermissionNames = app.permissions.map(function(p) {
+        return p.split('.').pop();
+    });
+    var uniquePermissions = uniqueArray(shorterPermissionNames);
+    var permList = uniquePermissions.map(function(shortName) {
+        var webAPIPermission = findWebAPIPermissionByAndroidName(shortName);
+        return { name: shortName, webAPI: webAPIPermission };
     });
 
     var html = '<ul class="permissions">';

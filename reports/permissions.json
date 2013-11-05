@@ -9,7 +9,10 @@
         ]
     },
     {
-        "android": "CAPTURE_AUDIO_OUTPUT",
+        "android": [
+            "CAPTURE_AUDIO_OUTPUT",
+            "RECORD_AUDIO"
+        ],
         "apiName": "GetUserMedia",
         "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/Navigator.getUserMedia",
         "appType": "hosted",
@@ -28,7 +31,9 @@
         ]
     },
     {
-        "android": "MEDIA_CONTENT_CONTROL",
+        "android": [
+            "MEDIA_CONTENT_CONTROL"
+        ],
         "apiName": "Audio Policy",
         "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
         "appType": "hosted",
@@ -38,7 +43,9 @@
         ]
     },
     {
-        "android": "MODIFY_AUDIO_SETTINGS",
+        "android": [
+            "MODIFY_AUDIO_SETTINGS"
+        ],
         "apiName": "Audio Policy",
         "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
         "appType": "hosted",
@@ -66,7 +73,10 @@
         ]
     },
     {
-        "android": "READ_CONTACTS",
+        "android": [
+            "READ_CONTACTS",
+            "WRITE_CONTACTS"
+        ],
         "apiName": "Contacts",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Contacts",
         "appType": "privileged",
@@ -105,7 +115,10 @@
         ]
     },
     {
-        "android": "READ_EXTERNAL_STORAGE",
+        "android": [
+            "READ_EXTERNAL_STORAGE",
+            "WRITE_EXTERNAL_STORAGE"
+        ],
         "apiName": "Device Storage",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
         "appType": "privileged",
@@ -133,7 +146,10 @@
         ]
     },
     {
-        "android": "ACCESS_COARSE_LOCATION",
+        "android": [
+            "ACCESS_COARSE_LOCATION",
+            "ACCESS_FINE_LOCATION"
+        ],
         "apiName": "Geolocation",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation",
         "appType": "hosted",
@@ -219,7 +235,9 @@
         ]
     },
     {
-        "android": "PROCESS_OUTGOING_CALLS",
+        "android": [
+            "PROCESS_OUTGOING_CALLS"
+        ],
         "apiName": "Audio Policy",
         "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
         "appType": "certified",
@@ -256,7 +274,11 @@
         ]
     },
     {
-        "android": "BLUETOOTH",
+        "android": [
+            "BLUETOOTH",
+            "BLUETOOTH_ADMIN",
+            "BLUETOOTH_PRIVILEGED"
+        ],
         "apiName": "&nbsp;",
         "apiURL": "",
         "appType": "certified",
@@ -266,7 +288,9 @@
         ]
     },
     {
-        "android": "CAPTURE_VIDEO_OUTPUT",
+        "android": [
+            "CAPTURE_VIDEO_OUTPUT"
+        ],
         "apiName": "Camera",
         "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/window.navigator.mozCameras",
         "appType": "certified",
@@ -357,7 +381,9 @@
         ]
     },
     {
-        "android": "WAKE_LOCK",
+        "android": [
+            "WAKE_LOCK"
+        ],
         "apiName": "Power Management",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Power_Management",
         "appType": "certified",
@@ -367,7 +393,11 @@
         ]
     },
     {
-        "android": "CHANGE_CONFIGURATION",
+        "android": [
+            "CHANGE_CONFIGURATION",
+            "CHANGE_NETWORK_STATE",
+            "WRITE_SETTINGS"
+        ],
         "apiName": "Settings",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Settings",
         "appType": "certified",
@@ -377,7 +407,12 @@
         ]
     },
     {
-        "android": "RECEIVE_SMS",
+        "android": [
+            "READ_SMS",
+            "RECEIVE_SMS",
+            "SEND_SMS",
+            "WRITE_SMS"
+        ],
         "apiName": "WebSMS",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/WebSMS",
         "appType": "certified",
@@ -387,7 +422,10 @@
         ]
     },
     {
-        "android": "CALL_PHONE",
+        "android": [
+            "CALL_PHONE",
+            "CALL_PRIVILEGED"
+        ],
         "apiName": "WebTelephony",
         "apiURL": "https://developer.mozilla.org/en-US/docs/Web/Guide/Telephony",
         "appType": "certified",
@@ -406,7 +444,9 @@
         ]
     },
     {
-        "android": "ADD_VOICEMAIL",
+        "android": [
+            "ADD_VOICEMAIL"
+        ],
         "apiName": "Voicemail",
         "apiURL": "",
         "appType": "certified",
@@ -416,7 +456,9 @@
         ]
     },
     {
-        "android": "INSTALL_PACKAGES",
+        "android": [
+            "INSTALL_PACKAGES"
+        ],
         "apiName": "Open Webapps",
         "apiURL": "",
         "appType": "certified",
@@ -428,7 +470,13 @@
         ]
     },
     {
-        "android": "ACCESS_NETWORK_STATE",
+        "android": [
+            "ACCESS_NETWORK_STATE",
+            "ACCESS_WIFI_STATE",
+            "CHANGE_WIFI_MULTICAST_STATE",
+            "CHANGE_WIFI_STATE",
+            "WRITE_APN_SETTINGS"
+        ],
         "apiName": "WiFi Management",
         "apiURL": "",
         "appType": "certified",

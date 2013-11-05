@@ -415,12 +415,16 @@ function uniqueArray(arr) {
 function findWebAPIPermissionByAndroidName(name) {
     var perm = null;
     var permissions = globalData.permissions;
+    
     for(var i = 0; i < permissions.length; i++) {
         var p = permissions[i];
-        if(p.android && p.android === name) {
-            return p;
+
+        if(p.android !== undefined && p.android.indexOf(name) !== -1) {
+            perm = p;
+            break;
         }
     }
+    
     return perm;
 }
 

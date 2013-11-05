@@ -362,16 +362,44 @@ function getAppIsPhonegap(app) {
 }
 
 
-function getAppUsesSO(app) {
-    var usesIt = false;
-
-    app.traits.ndk.traits.forEach(function(trait) {
-        if(trait.reason.match(/compiled code/i) && trait.amount > 0) {
-            usesIt = true;
+function getAppNDKSOTrait(app) {
+    var trait = null;
+    app.traits.ndk.traits.forEach(function(t) {
+        if(t.reason.match(/compiled code/i) && t.amount > 0) {
+            trait = t;
         }
     });
+    return trait;
+}
+
+function getAppUsesSO(app) {
+    return getAppNDKSOTrait(app) !== null;
+}
+
+
+function getAppSOFileList(app) {
+    var soTrait = getAppNDKSOTrait(app);
+    var files = [];
     
-    return usesIt;
+    if(soTrait) {
+        files = soTrait.files.map(function(f) {
+            var fileName = f.split('/').pop();
+            return fileName;
+        });
+    }
+
+    files.sort();
+
+    // Return unique names, as sometimes the library has different versions
+    // for different chipsets
+    var out = [];
+    files.forEach(function(f) {
+        if(out.indexOf(f) === -1) {
+            out.push(f);
+        }
+    });
+
+    return out;
 }
 
 
@@ -444,7 +472,7 @@ function makeMostPopularReport(data) {
     outElement.appendChild(table);
 
     var trHead = table.insertRow(-1);
-    trHead.innerHTML = '<td></td><td>html5?</td><td>air?</td><td>.so?</td>';
+    trHead.innerHTML = '<td></td><td>html5?</td><td>air?</td><td>.so?</td><td></td>';
     
     popular.forEach(function(app) {
 
@@ -479,6 +507,9 @@ function makeMostPopularReport(data) {
         tdSO.innerHTML = usesSO ? '.SO' : '';
         if(usesSO) {
             soAmount++;
+            tdSOList = tr.insertCell(-1);
+            tdSOList.className = 'files';
+            tdSOList.innerHTML = getAppSOFileList(app).join(', ');
         }
 
 

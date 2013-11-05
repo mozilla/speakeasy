@@ -152,6 +152,10 @@ nav a {
     text-decoration: none;
 }
 
+.files {
+    font-size: 0.7rem;
+}
+
 #category-breakdown > div {
     display: inline-block;
     width: 20rem;

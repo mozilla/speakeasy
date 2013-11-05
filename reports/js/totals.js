@@ -362,6 +362,19 @@ function getAppIsPhonegap(app) {
 }
 
 
+function getAppUsesSO(app) {
+    var usesIt = false;
+
+    app.traits.ndk.traits.forEach(function(trait) {
+        if(trait.reason.match(/compiled code/i) && trait.amount > 0) {
+            usesIt = true;
+        }
+    });
+    
+    return usesIt;
+}
+
+
 // Converts a decimal value into xy.zz% output
 function percentage(value) {
     return ((Math.round(value * 10000.0) / 100).toFixed(2)) + '%';
@@ -420,17 +433,18 @@ function makeMostPopularReport(data) {
     var outElement = document.getElementById('popular');
     var overview = document.createElement('div');
     var table = document.createElement('table');
-    var popular = getPopularApps(data); // data.mostPopular;
+    var popular = getPopularApps(data);
     var numPopularApps = popular.length;
     var totalApps = data.totals;
     var aggregate = {};
     var airAmount = 0;
+    var soAmount = 0;
 
     outElement.appendChild(overview);
     outElement.appendChild(table);
 
     var trHead = table.insertRow(-1);
-    trHead.innerHTML = '<td></td><td>html5?</td><td>air?</td>';
+    trHead.innerHTML = '<td></td><td>html5?</td><td>air?</td><td>.so?</td>';
     
     popular.forEach(function(app) {
 
@@ -454,10 +468,17 @@ function makeMostPopularReport(data) {
 
         var airness = tr.insertCell(-1);
         var air = isAir(app);
-        airness.innerHTML = air ? 'yes' : '';
+        airness.innerHTML = air ? 'AIR' : '';
         
         if(air) {
             airAmount++;
+        }
+
+        var tdSO = tr.insertCell(-1);
+        var usesSO = getAppUsesSO(app);
+        tdSO.innerHTML = usesSO ? '.SO' : '';
+        if(usesSO) {
+            soAmount++;
         }
 
 
@@ -470,7 +491,7 @@ function makeMostPopularReport(data) {
         txtOverview += '<p>' + k + ' ' + percentage(value / numPopularApps) + ' (' + value + ')</p>';
     }
 
-    overview.innerHTML = txtOverview + '<br /><p>air: ' + airAmount + '</p>';
+    overview.innerHTML = txtOverview + '<br /><p>air: ' + airAmount + ' (' + percentage(airAmount / numPopularApps) + ')</p><p>using native .SO code: ' + soAmount + ' (' + percentage(soAmount / numPopularApps) + ')</p>';
 
 
 }

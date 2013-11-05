@@ -152,10 +152,21 @@ nav a {
     text-decoration: none;
 }
 
-.files {
+.lists {
     font-size: 0.7rem;
 }
 
+.missing {
+    color: red;
+}
+
+ul.permissions li {
+    display: inline;
+}
+
+ul.permissions li+li:before {
+    content: ", ";
+}
 #category-breakdown > div {
     display: inline-block;
     width: 20rem;

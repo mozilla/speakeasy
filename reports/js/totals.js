@@ -1,6 +1,7 @@
 var globalData = {
     totals: [],
-    categories: {}
+    categories: {},
+    permissions: []
 };
 
 window.onload = function() {
@@ -388,18 +389,64 @@ function getAppSOFileList(app) {
         });
     }
 
-    files.sort();
 
     // Return unique names, as sometimes the library has different versions
     // for different chipsets
+    return uniqueArray(files);
+}
+
+
+function uniqueArray(arr) {
+    var copy = arr.slice(0);
     var out = [];
-    files.forEach(function(f) {
+    copy.sort();
+
+    copy.forEach(function(f) {
         if(out.indexOf(f) === -1) {
             out.push(f);
         }
     });
 
     return out;
+
+}
+
+
+function findWebAPIPermissionByAndroidName(name) {
+    var perm = null;
+    var permissions = globalData.permissions;
+    for(var i = 0; i < permissions.length; i++) {
+        var p = permissions[i];
+        if(p.android && p.android === name) {
+            return p;
+        }
+    }
+    return perm;
+}
+
+
+function renderPermissionsList(app) {
+    var uniquePermissions = uniqueArray(app.permissions);
+    var permList = uniquePermissions.map(function(p) {
+        var shorterName = p.split('.').pop();
+        var webAPIPermission = findWebAPIPermissionByAndroidName(shorterName);
+        return { name: shorterName, webAPI: webAPIPermission };
+    });
+
+    var html = '<ul class="permissions">';
+
+    permList.forEach(function(p) {
+        var li = '<li';
+        if(p.webAPI === null) {
+            li += ' class="missing"';
+        }
+        li += '>' + p.name + '</li>';
+        html += li;
+    });
+
+    html += '</ul>';
+
+    return html;
 }
 
 
@@ -503,15 +550,20 @@ function makeMostPopularReport(data) {
         }
 
         var tdSO = tr.insertCell(-1);
+        var tdSOList = tr.insertCell(-1);
         var usesSO = getAppUsesSO(app);
+
         tdSO.innerHTML = usesSO ? '.SO' : '';
         if(usesSO) {
             soAmount++;
-            tdSOList = tr.insertCell(-1);
-            tdSOList.className = 'files';
+            tdSOList.className = 'lists';
             tdSOList.innerHTML = getAppSOFileList(app).join(', ');
         }
 
+        
+        var tdPermissions = tr.insertCell(-1);
+        tdPermissions.className = 'lists';
+        tdPermissions.innerHTML = renderPermissionsList(app);
 
     });
 

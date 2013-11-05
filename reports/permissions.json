@@ -9,16 +9,16 @@
         ]
     },
     {
-        "android": [
-            "CAPTURE_AUDIO_OUTPUT",
-            "RECORD_AUDIO"
-        ],
         "apiName": "GetUserMedia",
         "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/Navigator.getUserMedia",
         "appType": "hosted",
         "name": "audio-capture",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "CAPTURE_AUDIO_OUTPUT",
+            "RECORD_AUDIO"
         ]
     },
     {
@@ -31,27 +31,27 @@
         ]
     },
     {
-        "android": [
-            "MEDIA_CONTENT_CONTROL"
-        ],
         "apiName": "Audio Policy",
         "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
         "appType": "hosted",
         "name": "audio-channel-content",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "MEDIA_CONTENT_CONTROL"
         ]
     },
     {
-        "android": [
-            "MODIFY_AUDIO_SETTINGS"
-        ],
         "apiName": "Audio Policy",
         "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
         "appType": "hosted",
         "name": "audio-channel-normal",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "MODIFY_AUDIO_SETTINGS"
         ]
     },
     {
@@ -73,16 +73,16 @@
         ]
     },
     {
-        "android": [
-            "READ_CONTACTS",
-            "WRITE_CONTACTS"
-        ],
         "apiName": "Contacts",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Contacts",
         "appType": "privileged",
         "name": "contacts",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "READ_CONTACTS",
+            "WRITE_CONTACTS"
         ]
     },
     {
@@ -115,16 +115,16 @@
         ]
     },
     {
-        "android": [
-            "READ_EXTERNAL_STORAGE",
-            "WRITE_EXTERNAL_STORAGE"
-        ],
         "apiName": "Device Storage",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Device_Storage",
         "appType": "privileged",
         "name": "device-storage:sdcard",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "READ_EXTERNAL_STORAGE",
+            "WRITE_EXTERNAL_STORAGE"
         ]
     },
     {
@@ -146,10 +146,6 @@
         ]
     },
     {
-        "android": [
-            "ACCESS_COARSE_LOCATION",
-            "ACCESS_FINE_LOCATION"
-        ],
         "apiName": "Geolocation",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation",
         "appType": "hosted",
@@ -158,6 +154,10 @@
             "FxOS",
             "Desktop",
             "Android"
+        ],
+        "android": [
+            "ACCESS_COARSE_LOCATION",
+            "ACCESS_FINE_LOCATION"
         ]
     },
     {
@@ -235,15 +235,15 @@
         ]
     },
     {
-        "android": [
-            "PROCESS_OUTGOING_CALLS"
-        ],
         "apiName": "Audio Policy",
         "apiURL": "https://wiki.mozilla.org/WebAPI/AudioChannels",
         "appType": "certified",
         "name": "audio-channel-telephony",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "PROCESS_OUTGOING_CALLS"
         ]
     },
     {
@@ -274,29 +274,29 @@
         ]
     },
     {
-        "android": [
-            "BLUETOOTH",
-            "BLUETOOTH_ADMIN",
-            "BLUETOOTH_PRIVILEGED"
-        ],
         "apiName": "&nbsp;",
         "apiURL": "",
         "appType": "certified",
         "name": "bluetooth",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "BLUETOOTH",
+            "BLUETOOTH_ADMIN",
+            "BLUETOOTH_PRIVILEGED"
         ]
     },
     {
-        "android": [
-            "CAPTURE_VIDEO_OUTPUT"
-        ],
         "apiName": "Camera",
         "apiURL": "https://developer.mozilla.org/en-US/docs/Web/API/window.navigator.mozCameras",
         "appType": "certified",
         "name": "camera",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "CAPTURE_VIDEO_OUTPUT"
         ]
     },
     {
@@ -381,57 +381,57 @@
         ]
     },
     {
-        "android": [
-            "WAKE_LOCK"
-        ],
         "apiName": "Power Management",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Power_Management",
         "appType": "certified",
         "name": "power",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "WAKE_LOCK"
         ]
     },
     {
-        "android": [
-            "CHANGE_CONFIGURATION",
-            "CHANGE_NETWORK_STATE",
-            "WRITE_SETTINGS"
-        ],
         "apiName": "Settings",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Settings",
         "appType": "certified",
         "name": "settings",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "CHANGE_CONFIGURATION",
+            "CHANGE_NETWORK_STATE",
+            "WRITE_SETTINGS"
         ]
     },
     {
-        "android": [
-            "READ_SMS",
-            "RECEIVE_SMS",
-            "SEND_SMS",
-            "WRITE_SMS"
-        ],
         "apiName": "WebSMS",
         "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/WebSMS",
         "appType": "certified",
         "name": "sms",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "READ_SMS",
+            "RECEIVE_SMS",
+            "SEND_SMS",
+            "WRITE_SMS"
         ]
     },
     {
-        "android": [
-            "CALL_PHONE",
-            "CALL_PRIVILEGED"
-        ],
         "apiName": "WebTelephony",
         "apiURL": "https://developer.mozilla.org/en-US/docs/Web/Guide/Telephony",
         "appType": "certified",
         "name": "telephony",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "CALL_PHONE",
+            "CALL_PRIVILEGED"
         ]
     },
     {
@@ -444,21 +444,18 @@
         ]
     },
     {
-        "android": [
-            "ADD_VOICEMAIL"
-        ],
         "apiName": "Voicemail",
         "apiURL": "",
         "appType": "certified",
         "name": "voicemail",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "ADD_VOICEMAIL"
         ]
     },
     {
-        "android": [
-            "INSTALL_PACKAGES"
-        ],
         "apiName": "Open Webapps",
         "apiURL": "",
         "appType": "certified",
@@ -467,22 +464,25 @@
             "FxOS",
             "Desktop",
             "Android"
+        ],
+        "android": [
+            "INSTALL_PACKAGES"
         ]
     },
     {
-        "android": [
-            "ACCESS_NETWORK_STATE",
-            "ACCESS_WIFI_STATE",
-            "CHANGE_WIFI_MULTICAST_STATE",
-            "CHANGE_WIFI_STATE",
-            "WRITE_APN_SETTINGS"
-        ],
         "apiName": "WiFi Management",
         "apiURL": "",
         "appType": "certified",
         "name": "wifi-manage",
         "platforms": [
             "FxOS"
+        ],
+        "android": [
+            "ACCESS_NETWORK_STATE",
+            "ACCESS_WIFI_STATE",
+            "CHANGE_WIFI_MULTICAST_STATE",
+            "CHANGE_WIFI_STATE",
+            "WRITE_APN_SETTINGS"
         ]
     },
     {
@@ -493,5 +493,50 @@
         "platforms": [
             "FxOS"
         ]
+    },
+    {
+        "android": [
+            "INTERNET"
+        ],
+        "apiName": "",
+        "apiURL": "",
+        "appType": "hosted",
+        "name": "internet",
+        "platforms": [
+            "Android",
+            "Desktop",
+            "FxOS"
+        ],
+        "granted": true
+    },
+    {
+        "android": [
+            "SET_ORIENTATION"
+        ],
+        "apiName": "Screen Orientation",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Managing_screen_orientation",
+        "appType": "hosted",
+        "name": "orientation",
+        "platforms": [
+            "Android",
+            "Desktop",
+            "FxOS"
+        ],
+        "granted": true
+    },
+    {
+        "android": [
+            "VIBRATE"
+        ],
+        "apiName": "Vibration",
+        "apiURL": "https://developer.mozilla.org/en-US/docs/WebAPI/Vibration",
+        "appType": "hosted",
+        "name": "vibration",
+        "platforms": [
+            "Android",
+            "Desktop",
+            "FxOS"
+        ],
+        "granted": true
     }
 ]
